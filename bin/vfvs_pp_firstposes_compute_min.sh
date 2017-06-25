@@ -12,7 +12,7 @@ error_response_std() {
     exit 1
 }
 trap 'error_response_std $LINENO' ERR
-set -x
+
 # Checking the input paras
 if [ "${1}" == "-h" ]; then
     echo -e "\n${usage}\n\n"
