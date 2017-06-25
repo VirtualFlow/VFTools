@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-usage="vfvs_pp_firstposes_minvalue.sh <input file> <first_input_column_ID> <last_input_column_ID> <output file>
+usage="vfvs_pp_firstposes_compute_min.sh <input file> <first_input_column_ID> <last_input_column_ID> <output file>
 
 The of the column IDs starts at 1 (all columns are counted, even non-numerical ones). Columns are separates by whitespaces."
 
@@ -12,7 +12,7 @@ error_response_std() {
     exit 1
 }
 trap 'error_response_std $LINENO' ERR
-
+set -x
 # Checking the input paras
 if [ "${1}" == "-h" ]; then
     echo -e "\n${usage}\n\n"

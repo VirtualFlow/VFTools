@@ -5,7 +5,7 @@ Possible types:
     sub: first poses in sub folders, uncompressed (version 6, 7)
     tar: first poses in tar files (one per tranch, version >= 8)
 "
-
+set -x
 # Standard error response 
 error_response_std() {
     echo "Error was trapped" 1>&2
