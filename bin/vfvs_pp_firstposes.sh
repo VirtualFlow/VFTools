@@ -46,7 +46,7 @@ for folder in $(ls ${input_folder}); do
     vfvs_pp_firstposes_compute_min.sh firstposes.all $first_column_id $last_column_id firstposes.all.new
     vfvs_pp_firstposes_prepare_ranking_v11.sh firstposes.all.new $((last_column_id + 1)) firstposes.all.new.ranking.${no_highest_ranking_compounds} ${no_highest_ranking_compounds}
     vfvs_pp_firstposes_prepare_ranking_structures_v10.sh ../${pdbqt_folder} ../${input_folder}/$folder/results/ tar firstposes.all.new.ranking.${no_highest_ranking_compounds} firstposes.all.new.ranking.${no_highest_ranking_compounds}.structures continue
-    cd $pwd
+    cd ..
 done
 
 echo -e "\n * The first-poses of the results have been prepared\n\n"
