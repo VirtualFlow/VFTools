@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #Checking the input arguments
-usage="Usage: vf_pp_firstposes.sh <input root folder> <pdbqt_folder> <first_column_id> <last_column_id> <no of highest ranking compounds>
+usage="Usage: vfvs_pp_firstposes_all_dockings.sh <input root folder> <pdbqt_folder> <first_column_id> <last_column_id> <no of highest ranking compounds>
 
 For each docking the rankings are and the structure files are prepared.
 
@@ -36,10 +36,13 @@ pdbqt_folder="$2"
 first_column_id=$3
 last_column_id=$4
 no_highest_ranking_compounds=$5
-set -x
 
 # Body
 for folder in $(ls ${input_folder}); do
+    if [ -d "$folder" ]; then
+        echo -e " * The folder $folder exists already, skipping." 
+        continue
+    fi
     mkdir -p $folder
     cd $folder/
     vfvs_pp_firstposes_all_unite.sh ../${input_folder}/$folder/summaries/first-poses/ tar firstposes.all
