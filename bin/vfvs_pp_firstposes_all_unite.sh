@@ -56,7 +56,7 @@ if [ "${type}" = "sub" ]; then
 elif [ "${type}" = "tar" ]; then
     cd ${temp_folder}
     for tranch in $(ls ../${input_folder}); do
-        echo " * Extracting ${input_folder}/${trach} to ${temp_folder}"
+        echo " * Extracting ${input_folder}/${tranch} to ${temp_folder}"
         tar -xvf ../${input_folder}/${tranch} || true
     done
     cd ..

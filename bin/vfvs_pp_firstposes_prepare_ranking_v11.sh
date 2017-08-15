@@ -52,5 +52,5 @@ fi
 
 echo " * Preparing the file ${output_filename} containing the winners"
 #head -n "${no_of_winners}" ${input_filename}.sorted | awk -F ' ' '{$3 = sprintf("%5.1f", $3); print $2": "  $3 "  (" $1")"}' > ${output_filename}
-head -n "${no_of_winners}" ${input_filename}.sorted | awk -F ' ' -v rci=${column_id} '{$3 = sprintf("%5.1f", $rci); printf "%-10s %s %5s\n", $1,  $2, $3}' > ${output_filename}
+head -n "${no_of_winners}" ${input_filename}.sorted | awk -F ' ' -v rci=${column_id} '{$3 = sprintf("%5.1f", $rci); printf "%-10s %s %5s\n", $1,  $2, $3}' > ${output_filename} # rci = ranked column id
 echo -e "\n * The preparation of the rankings has been completed.\n\n"
