@@ -49,7 +49,7 @@ if [ "${type}" = "sub" ]; then
     for collection in $(ls ${input_folder}); do
         for file in $(ls ${input_folder}/${collection}); do
             echo " * Adding file ${input_folder}/${collection}/${file} to ${output_filename}"
-            cat ${input_folder}/${collection}/${file} | grep -v "ZINC\-ID" | sed "s/^/${collection}_${file/.txt} /g"  >> ${output_filename}
+            cat ${input_folder}/${collection}/${file} | grep -v "average\-score" | sed "s/^/${collection}_${file/.txt} /g"  >> ${output_filename}
             echo 
         done
     done
@@ -63,7 +63,7 @@ elif [ "${type}" = "tar" ]; then
     for tranch in $(ls ${temp_folder}); do
         for file in $(ls ${temp_folder}/${tranch}); do
             echo " * Adding file ${temp_folder}/${tranch}/${file} to ${output_filename}"
-            zcat ${temp_folder}/${tranch}/${file} | grep -v "ZINC\-ID" | sed "s/^/${tranch}_${file/.txt.gz} /g"  >> ${output_filename}
+            zcat ${temp_folder}/${tranch}/${file} | grep -v "average\-score" | sed "s/^/${tranch}_${file/.txt.gz} /g"  >> ${output_filename}
         done
     done
 fi           
