@@ -1,21 +1,34 @@
 #!/bin/bash
 
 #Checking the input arguments
-usage="Usage: vfvs_pp_firstposes_all_dockings.sh <input root folder> <pdbqt_folder> <first_column_id> <last_column_id> <no of highest ranking compounds>
+usage="Usage: vfvs_pp_firstposes_all_dockings.sh <input root folder> <pdbqt_folder> <no of highest ranking compounds> <compute_min_values> [<first_column_id> <last_column_id>]
 
 For each docking the rankings are and the structure files are prepared.
 
 The <input root folder> is the output-folder/complete folder of the original workflow.
 The command has to be run in the desired output folder.
-All path names have to be relative to the working directory."
+All path names have to be relative to the working directory.
+<compute_min_values>: possible values: yes or no. Useful for VFVS versions below 11.5 where the value was not computed automatically correctly. In this case the fourth column is used to get the min value. Otherwise the minimum is comuted from the colums <first column id> to <last column id> which need to be specified if <compute_min_values> is set to yes."
 
 if [ "${1}" == "-h" ]; then
    echo -e "\n${usage}\n\n"
    exit 0 
 fi
 
-if [[ "$#" -ne "5" ]]; then
+if [[ "$#" -ne "4" && "$#" -ne "6" ]]; then
    echo -e "\nWrong number of arguments. Exiting.\n"
+   echo -e "${usage}\n\n"
+   exit 1
+elif [[ "$4" == "no" && "$#" -ne "4" ]]; then 
+   echo -e "\nIf <compute min values> is set to no then four arguments have to be present. Exiting.\n"
+   echo -e "${usage}\n\n"
+   exit 1
+elif [[ "$4" == "yes" && "$#" -ne "6" ]]; then 
+   echo -e "\nIf <compute min values> is set to yes then six arguments have to be present. Exiting.\n"
+   echo -e "${usage}\n\n"
+   exit 1
+elif [[ "$4" != "no" && "$4" != "yes" ]]; then
+   echo -e "\nIf <compute min values> has to be either 'no' or 'yes'. Exiting.\n"
    echo -e "${usage}\n\n"
    exit 1
 fi
@@ -33,9 +46,8 @@ trap 'error_response_nonstd $LINENO' ERR
 # Variables
 input_folder="$1"
 pdbqt_folder="$2"
-first_column_id=$3
-last_column_id=$4
-no_highest_ranking_compounds=$5
+no_highest_ranking_compounds=$3
+compute_min_value=$4
 
 # Body
 for folder in $(ls ${input_folder}); do
@@ -46,8 +58,14 @@ for folder in $(ls ${input_folder}); do
     mkdir -p $folder
     cd $folder/
     vfvs_pp_firstposes_all_unite.sh ../${input_folder}/$folder/summaries/first-poses/ tar firstposes.all
-    vfvs_pp_firstposes_compute_min.sh firstposes.all $first_column_id $last_column_id firstposes.all.new
-    vfvs_pp_firstposes_prepare_ranking_v11.sh firstposes.all.new $((last_column_id + 1)) firstposes.all.new.ranking.${no_highest_ranking_compounds} ${no_highest_ranking_compounds}
+    if [ "${compute_min_value}" == yes ]; then
+        first_column_id=$5    
+        last_column_id=$6
+        vfvs_pp_firstposes_compute_min.sh firstposes.all $first_column_id $last_column_id firstposes.all.new
+        vfvs_pp_firstposes_prepare_ranking_v11.sh firstposes.all.new $((last_column_id + 1)) firstposes.all.new.ranking.${no_highest_ranking_compounds} ${no_highest_ranking_compounds}
+    else
+        vfvs_pp_firstposes_prepare_ranking_v11.sh firstposes.all 4 firstposes.all.new.ranking.${no_highest_ranking_compounds} ${no_highest_ranking_compounds}
+    fi
     vfvs_pp_firstposes_prepare_ranking_structures_v10.sh ../${pdbqt_folder} ../${input_folder}/$folder/results/ tar firstposes.all.new.ranking.${no_highest_ranking_compounds} firstposes.all.new.ranking.${no_highest_ranking_compounds}.structures continue
     cd ..
 done
