@@ -43,7 +43,7 @@ error_response_nonstd() {
     pkill 0 
     exit 1
 }
-trap 'error_response_nonstd $LINENO' ERR
+#trap 'error_response_nonstd $LINENO' ERR
 
 clean_exit() {    
     pkill -P $$ || true
