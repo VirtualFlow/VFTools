@@ -45,6 +45,18 @@ error_response_nonstd() {
 }
 trap 'error_response_nonstd $LINENO' ERR
 
+clean_exit() {    
+    pkill -P $$ || true
+    sleep 3
+    pkill -9 -P $$ || true
+
+    # Get our process group id
+    PGID=$(ps -o pgid= $$ | grep -o [0-9]*)
+    # Terminating it in a new process group
+    setsid bash -c "kill -- -$PGID; sleep 5; kill -9 -$PGID";
+}
+trap 'clean_exit' EXIT
+
 # Variables
 input_folder="$1"
 pdbqt_folder="$2"
