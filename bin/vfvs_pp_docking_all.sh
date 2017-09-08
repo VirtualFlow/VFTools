@@ -33,7 +33,7 @@ elif [[ "$5" != "no" && "$5" != "yes" ]]; then
    echo -e "${usage}\n\n"
    exit 1
 fi
-
+set -x
 # Standard error response 
 error_response_nonstd() {
     echo "Error was trapped which is a nonstandard error."
@@ -79,5 +79,7 @@ for folder in $(ls ${input_folder}); do
         fi
     done
 done
+
+wait
 
 echo -e "\n * The first-poses of all docking runs have been prepared\n\n"
