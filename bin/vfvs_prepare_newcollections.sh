@@ -98,15 +98,17 @@ while read -r line; do
         fi
     done
     echo -e "\n *** Adding the molecule ${molecule} to the new collection ${collection_new} ***"
-    if [ "${pdbqt_folder_format}" == "tar" ]; then
+    if [ "${pdbqt_folder_format}" == "tar_tar" ]; then
         mkdir ${temp_folder}/${tranch}
         cd ${temp_folder}/${tranch}
         tar -xvf ../../${pdbqt_input_folder}/${tranch}.tar ${collection_no}.pdbqt.gz.tar || true
         cd ../..
         tar -xOf ${temp_folder}/${tranch}/${collection_no}.pdbqt.gz.tar ${molecule}.pdbqt.gz > ${output_folder}/${collection_new}/${molecule}.pdbqt.gz || true
         rm -r ${temp_folder}/${tranch}
-    elif [ "${pdbqt_folder_format}" == "sub" ]; then
+    elif [ "${pdbqt_folder_format}" == "sub_tar" ]; then
         tar -xOf ${pdbqt_input_folder}/${tranch}/${collection_no}.pdbqt.gz.tar ${molecule}.pdbqt.gz > ${output_folder}/${collection_new}/${molecule}.pdbqt.gz || true
+    else 
+        echo -e "Error: The argument pdbqt_folder_format has an unsupported value: ${pdbqt_folder_format}. Supported are sub_tar and tar_tar"
     fi
 done < ${ligand_file}
 echo -e "\n *** The preparation of the intermediate folders has been completed ***"
