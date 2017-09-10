@@ -50,6 +50,6 @@ while read -r line; do
     collection=$(echo -n "$line" | awk -F '[ _]' '{print $2}')
     zincid=$(echo -n "$line" | awk -F '[ _]' '{print $3}')    
     grep ${zincid} ${smiles_folder}/${tranch}/${collection}.smi >> ${output_file}
-done < ${input_file}
+done < "${input_file}"
 
 echo -e "\n * The smiles of the compounds have been prepared\n\n"
