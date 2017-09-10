@@ -39,7 +39,7 @@ set -x
 # Variables
 input_file="$1"
 smiles_folder="$2"
-ouput_file="$3"
+output_file="$3"
 
 tempfolder="/tmp/${USER}/vfvs_prepare_zincids2smiles_$(date | tr -s " " "_")"
 mkdir -p ${tempfolder}
@@ -49,7 +49,7 @@ while read -r line; do
     tranch=$(echo -n "$line" | awk -F '[ _]' '{print $1}')
     collection=$(echo -n "$line" | awk -F '[ _]' '{print $2}')
     zincid=$(echo -n "$line" | awk -F '[ _]' '{print $3}')    
-    grep ${zincid} ${smiles_folder}/${tranch}/${collection}.smi >> ${output_file}
+    grep "${zincid}" "${smiles_folder}/${tranch}/${collection}.smi"  >> "${output_file}"
 done < "${input_file}"
 
 echo -e "\n * The smiles of the compounds have been prepared\n\n"
