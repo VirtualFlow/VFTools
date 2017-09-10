@@ -31,7 +31,7 @@ trap 'error_response_nonstd $LINENO' ERR
 
 
 clean_exit() {
-    rm -r ${tempfolder}
+    echo
 }
 trap 'clean_exit' EXIT
 set -x
@@ -40,9 +40,6 @@ set -x
 input_file="$1"
 smiles_folder="$2"
 output_file="$3"
-
-tempfolder="/tmp/${USER}/vfvs_prepare_zincids2smiles_$(date | tr -s " " "_")"
-mkdir -p ${tempfolder}
 
 # Body
 while read -r line; do 
