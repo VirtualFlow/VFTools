@@ -44,7 +44,7 @@ no_of_winners=${4}
 # Main
 if [ ! -f ${input_filename}.sorted ]; then
     echo " * Sorting the first poses"
-    nice -n 20 ionice -c2 -n7 cat ${input_filename} | LC_ALL=C sort -k${column_id} -n > ${input_filename}.sorted
+    nice -n 20 ionice -c2 -n7 cat ${input_filename} | LC_ALL=C sort -k${column_id} -n | column -t > ${input_filename}.sorted
 else
     echo " * Found the file ${input_filename}.sorted. Using it in the further processing"
 fi

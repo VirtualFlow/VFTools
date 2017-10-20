@@ -66,7 +66,8 @@ set -x
 while read -r line; do
     read -r -a array <<< "$line"
     collection="${array[0]}"
-    molecule=${array[1]/_*} # removing replicas
+    #molecule=${array[1]/_*} # removing replicas
+    molecule=${array[1]}
     tranch=${collection/_*}
     collection_no=${collection/*_}
 #    name2_padded=$(printf "%05.f" ${collection:5})

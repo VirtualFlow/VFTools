@@ -8,27 +8,15 @@ For each docking the rankings are and the structure files are prepared.
 The <input root folder> is normally one of the folders in output-folder/complete.
 The command has to be run in the desired output folder.
 All path names have to be relative to the working directory.
-<compute_min_values>: possible values: yes or no. Useful for VFVS versions below 11.5 where the value was not computed automatically correctly. In this case the fourth column is used to get the min value. Otherwise the minimum is comuted from the colums <first column id> to <last column id> which need to be specified if <compute_min_values> is set to yes."
+<compute_min_values>: possible values: yes or no. Useful for VFVS versions below 11.7 where the value was not computed automatically correctly. If set to no the fourth column is used to get the minimum value. Otherwise the minimum is comuted from the colums sixth to the final column of the summary files."
 
 if [ "${1}" == "-h" ]; then
    echo -e "\n${usage}\n\n"
    exit 0 
 fi
 
-if [[ "$#" -ne "4" && "$#" -ne "6" ]]; then
+if [[ "$#" -ne "4" ]]; then
    echo -e "\nWrong number of arguments. Exiting.\n"
-   echo -e "${usage}\n\n"
-   exit 1
-elif [[ "$4" == "no" && "$#" -ne "4" ]]; then 
-   echo -e "\nIf <compute min values> is set to no then four arguments have to be present. Exiting.\n"
-   echo -e "${usage}\n\n"
-   exit 1
-elif [[ "$4" == "yes" && "$#" -ne "6" ]]; then 
-   echo -e "\nIf <compute min values> is set to yes then six arguments have to be present. Exiting.\n"
-   echo -e "${usage}\n\n"
-   exit 1
-elif [[ "$4" != "no" && "$4" != "yes" ]]; then
-   echo -e "\nIf <compute min values> has to be either 'no' or 'yes'. Exiting.\n"
    echo -e "${usage}\n\n"
    exit 1
 fi
@@ -67,8 +55,8 @@ mkdir -p $docking_name
 cd $docking_name/
 vfvs_pp_firstposes_all_unite.sh ../${input_folder}/summaries/first-poses/ tar firstposes.all
 if [ "${compute_min_value}" == yes ]; then
-    first_column_id=$5    
-    last_column_id=$6
+    first_column_id=6
+    last_column_id=$(head -n 1 firstposes.all | wc -w)
     vfvs_pp_firstposes_compute_min.sh firstposes.all $first_column_id $last_column_id firstposes.all.new
     vfvs_pp_firstposes_prepare_ranking_v11.sh firstposes.all.new $((last_column_id + 1)) firstposes.all.new.ranking.${no_highest_ranking_compounds} ${no_highest_ranking_compounds}
 else
