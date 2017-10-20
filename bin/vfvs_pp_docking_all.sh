@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #Checking the input arguments
-usage="Usage: vfvs_pp_docking_all.sh <input root folder> <pdbqt_folder> <no of highest ranking compounds> <parallel runs> <compute_min_values> [<first_column_id> <last_column_id>]
+usage="Usage: vfvs_pp_docking_all.sh <input root folder> <pdbqt_folder> <no of highest ranking compounds> <parallel runs> <compute_min_values>
 
 For each docking the rankings are and the structure files are prepared.
 
