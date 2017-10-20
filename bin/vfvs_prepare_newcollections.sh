@@ -5,7 +5,7 @@ usage="vfvs_prepare_newcollections.sh <ligand file> <pdbqt_input_folder> <pdbqt_
 Requires a ligand file with the first column the collection name and the second column the ligand name.
 
 pdbqt_folder_format: Possible values: tar_tar and sub_tar
-sub_sub is supported by vfvs_prepare_newcollections2.sh
+sub_tar is supported by vfvs_prepare_newcollections2.sh
 This script is not yet ready to continue started procedures."
 
 # Standard error response 
