@@ -141,5 +141,10 @@ for folder in $(ls ${output_folder}); do
 done
 echo -e "\n *** The preparation of the tranch-archives has been completed ***"
 
+# Finalization
+mv ${output_folder}/*tar ${temp_folder}/
+rm -r ${output_folder}/
+mv ${temp_folder} ${output_folder}
+
 echo -e "\n *** The preparation of the new collections has been completed ***"
 
