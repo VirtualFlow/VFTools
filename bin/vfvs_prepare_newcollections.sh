@@ -56,8 +56,7 @@ if [ -d ${temp_folder} ]; then
     rm -r ${temp_folder}
 fi
 mkdir ${temp_folder}
-echo " * If the file ${output_folder}.length.all exists already it will be cleared."
-echo -n "" > "$(basename ${output_folder}.length.all)"
+
 
 
 # Loop for each winning structure
@@ -113,19 +112,16 @@ while read -r line; do
 done < ${ligand_file}
 echo -e "\n *** The preparation of the intermediate folders has been completed ***"
 
-if [ -f ${output_folder}.length.all ] ; then
-    echo " The file ${output_folder}.length.all does exist already. Skipping the preparation of this file"
-    break
-else
-    for folder in $(ls -d ${output_folder}/*/); do
-        echo -e "\n *** Adding the collection ${folder} to the length.all file ***"
-        folder=${folder%/}
-        cd ${folder}
-        length=$(ls -A | wc -l)
-        echo "${folder} ${length}" >> ../../${output_folder}.length.all
-        cd ../..
-    done
-fi
+echo -e "\n *** Starting the preparation of the length.all file ***"
+echo " * If the file ${output_folder}.length.all exists already it will be cleared."
+echo -n "" > ${output_folder}.length.all
+for folder in $(ls ${output_folder}); do
+    echo -e "\n *** Adding the collection ${folder} to the length.all file ***"
+    cd ${output_folder}/${folder}
+    length=$(ls -A | wc -l)
+    echo "${folder} ${length}" >> ../../${output_folder}.length.all
+    cd ../..
+done
 echo -e "\n *** The preparation of the length.all file has been completed ***"
 
 echo -e "\n *** Starting the preparation of the tar archives ***"
@@ -142,5 +138,9 @@ for folder in $(ls ${output_folder}); do
 done
 echo -e "\n *** The preparation of the tranch-archives has been completed ***"
 
-echo -e "\n *** The preparation of the new collections has been completed ***"
+# Finalization
+mv ${output_folder}/*tar ${temp_folder}/
+rm -r ${output_folder}/
+mv ${temp_folder} ${output_folder}
 
+echo -e "\n *** The preparation of the new collections has been completed ***"
