@@ -113,18 +113,19 @@ while read -r line; do
 done < ${ligand_file}
 echo -e "\n *** The preparation of the intermediate folders has been completed ***"
 
-echo -e "\n *** Starting the preparation of the length.all file ***"
-for folder in $(ls ${output_folder}); do
-    if [ -f ${output_folder}.length.all ] ; then
-        echo " The file ${output_folder}.length.all does exist already. Skipping the preparation of this file"
-        break
-    fi
-    echo -e "\n *** Adding the collection ${folder} to the length.all file ***"
-    cd ${output_folder}/${folder}
-    length=$(ls -A | wc -l)
-    echo "${folder} ${length}" >> ../../${output_folder}.length.all
-    cd ../..
-done
+if [ -f ${output_folder}.length.all ] ; then
+    echo " The file ${output_folder}.length.all does exist already. Skipping the preparation of this file"
+    break
+else
+    for folder in $(ls -d ${output_folder}/*/); do
+        echo -e "\n *** Adding the collection ${folder} to the length.all file ***"
+        folder=${folder%/}
+        cd ${folder}
+        length=$(ls -A | wc -l)
+        echo "${folder} ${length}" >> ../../${output_folder}.length.all
+        cd ../..
+    done
+fi
 echo -e "\n *** The preparation of the length.all file has been completed ***"
 
 echo -e "\n *** Starting the preparation of the tar archives ***"
