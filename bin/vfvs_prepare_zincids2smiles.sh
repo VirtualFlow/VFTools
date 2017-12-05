@@ -4,6 +4,7 @@
 usage="Usage: vfvs_prepare_zincids2smiles.sh <input_lists> <smiles_collection_folder> <output_filename>
 
 The <input_list> has to contain the collection in the first column and the ZINC-ID in the second column.
+The colums have to be separated by single spaces.
 All path names have to be relative to the working directory."
 
 if [ "${1}" == "-h" ]; then
