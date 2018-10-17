@@ -89,9 +89,13 @@ while IFS='' read -r line || [[ -n "$line" ]]; do
 
     # Variables
     line=$(echo ${line} | tr -d "\r")
-    smiles="$(echo $line | awk '{print $1}')"
-    name="$(echo $line | awk '{print $2}')"
-    tranch="$(echo $line | awk '{print $3}')"
+    read -a line_array <<< ${line}
+    smiles=${line_array[0]}
+    name=${line_array[1]}
+    tranch=${line_array[2]}
+#    smiles="$(echo $line | awk '{print $1}')"
+#    name="$(echo $line | awk '{print $2}')"
+#    tranch="$(echo $line | awk '{print $3}')"
     meta_tranch=${tranch:0:2}
 
     # Creating the required folder
@@ -99,7 +103,7 @@ while IFS='' read -r line || [[ -n "$line" ]]; do
     
     # Adding the compound to its tranch file
     echo "Adding compound ${name} to tranch ${tranch}"
-    echo "${smiles} ${name}" >> ${meta_tranch}/${tranch}.txt
+    echo "${smiles} ${name}" >> ${meta_tranch}/${tranch}.txt    
 
     # Updating the counter
     counter=$((counter+1))
