@@ -1,7 +1,7 @@
 #!/bin/bash
 set -x
 #Checking the input arguments
-usage="Usage: vfvs_pp_firstposes_all_dockings.sh <input root folder> <pdbqt_folder> <no of highest ranking compounds> <compute_min_values>
+usage="Usage: vfvs_pp_docking_single.sh <input root folder> <pdbqt_folder> <no of highest ranking compounds> <compute_min_values>
 
 For each docking the rankings are and the structure files are prepared.
 
