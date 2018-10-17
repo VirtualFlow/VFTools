@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Usage information
-usage="Usage: vflp_prepare_inputdb_splitting.sh <input file> <skip first line>
+usage="Usage: vflp_prepare_inputdb_splitting.sh <input files> <create meta-tranch folders>
 
 Summary:
     Sortes the compounds in a file with many molecules into separate files corresponding to the tranches. 
@@ -13,10 +13,8 @@ Requirements:
 
 Arguments:
     -h: Display this help
-    '<input file>': The input file with the compounds (SMILES, name, tranch)
-    <skip first line>: If the first line contains column headings rather than a molecule. Possible values:
-      * false
-      * true
+    '<input files>': The input files with the compounds (SMILES, name, tranch), separated by a colon ":"
+    -<create meta-tranch folders>: true or false. If false, the folders have to exist already.
 "
 
 # Checking the input parameters
@@ -63,9 +61,12 @@ error_response_std() {
 }
 trap 'error_response_std $LINENO' ERR
 
+trap "pkill -9 -P $$" EXIT
+
+
 # Variables
-inputfile="$(eval echo ${1})"
-skip_first_line="${2}"
+input_files="$(eval echo ${1})"
+create_meta_tranch_folders="${2}"
 
 
 # Printing some information
@@ -73,40 +74,43 @@ echo -e "\n\n * Starting to prepare file ${file}\n"
 
 # Reading the input file line by line
 counter=0
-while IFS='' read -r line || [[ -n "$line" ]]; do
+for input_file in ${input_files//:/ }; do 
+    while IFS='' read -r line || [[ -n "$line" ]]; do
 
-    # Removing first line if needed
-    if [[ "${counter}" == "0" ]] && [[ "${skip_first_line^^}" == "TRUE" ]]; then
+        # Removing first line if needed
+        if [[ "${counter}" == "0" ]] && [[ "${skip_first_line^^}" == "TRUE" ]]; then
 
-        # Printing some information
-        echo "   * Skipping the first line of file ${file}"
+            # Printing some information
+            echo "   * Skipping the first line of file ${file}"
+
+            # Updating the counter
+            counter=$((counter+1))
+
+            continue
+        fi
+
+        # Variables
+        line=$(echo ${line} | tr -d "\r")
+        read -a line_array <<< ${line}
+        smiles=${line_array[0]}
+        name=${line_array[1]}
+        tranch=${line_array[2]}
+        meta_tranch=${tranch:0:2}
+
+        # Creating the required folder
+        if [ "${create_meta_tranch_folders^^}" == "TRUE" ]; then 
+            mkdir -p ${meta_tranch}
+        fi
+        
+        # Adding the compound to its tranch file
+        echo "Adding compound ${name} to tranch ${tranch}"
+        echo "${smiles} ${name}" >> ${meta_tranch}/${tranch}.txt    
 
         # Updating the counter
         counter=$((counter+1))
+    done < "${input_file}" &
+done
 
-        continue
-    fi
-
-    # Variables
-    line=$(echo ${line} | tr -d "\r")
-    read -a line_array <<< ${line}
-    smiles=${line_array[0]}
-    name=${line_array[1]}
-    tranch=${line_array[2]}
-#    smiles="$(echo $line | awk '{print $1}')"
-#    name="$(echo $line | awk '{print $2}')"
-#    tranch="$(echo $line | awk '{print $3}')"
-    meta_tranch=${tranch:0:2}
-
-    # Creating the required folder
-    mkdir -p ${meta_tranch}
-    
-    # Adding the compound to its tranch file
-    echo "Adding compound ${name} to tranch ${tranch}"
-    echo "${smiles} ${name}" >> ${meta_tranch}/${tranch}.txt    
-
-    # Updating the counter
-    counter=$((counter+1))
-done < "${inputfile}"
+wait
 
 echo -e "\n * The preparation of the files was completed.\n\n"
