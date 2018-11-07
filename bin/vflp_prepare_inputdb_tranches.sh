@@ -61,7 +61,7 @@ error_response_std() {
 }
 trap 'error_response_std $LINENO' ERR
 
-trap "pkill -9 -P $$" EXIT
+trap "pkill -9 -P $$ &> /dev/null || true" EXIT
 
 
 # Variables
@@ -69,12 +69,11 @@ input_files="$(eval echo ${1})"
 create_meta_tranch_folders="${2}"
 
 
-# Printing some information
-echo -e "\n\n * Starting to prepare file ${file}\n"
-
 # Reading the input file line by line
 counter=0
 for input_file in ${input_files//:/ }; do 
+
+    echo -e "\n\n * Starting to prepare file ${input_file}\n"
     while IFS='' read -r line || [[ -n "$line" ]]; do
 
         # Removing first line if needed
@@ -103,7 +102,7 @@ for input_file in ${input_files//:/ }; do
         fi
         
         # Adding the compound to its tranch file
-        echo "Adding compound ${name} to tranch ${tranch}"
+        #echo "Adding compound ${name} to tranch ${tranch}"
         echo "${smiles} ${name}" >> ${meta_tranch}/${tranch}.txt    
 
         # Updating the counter

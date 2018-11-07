@@ -47,7 +47,15 @@ while read -r line; do
     tranch=$(echo -n "$line" | awk -F '[ _]' '{print $1}')
     collection=$(echo -n "$line" | awk -F '[ _]' '{print $2}')
     zincid=$(echo -n "$line" | awk -F '[ _]' '{print $3}')    
-    grep "${zincid}" "${smiles_folder}/${tranch}/${collection}.smi"  >> "${output_file}"
+    trap '' ERR
+    smiles=$(grep "${zincid}" "${smiles_folder}/${tranch}/${collection}.smi")  >> "${output_file}"
+    exit_code="$?"
+    if [ ${exit_code} == 0 ]; then
+        echo ${smiles} >> ${output_file}
+    else 
+        echo ${zincid} ${collection} >> ${output_file}.failed
+    fi
+    trap 'error_response_nonstd $LINENO' ERR
 done < "${input_file}"
 
 echo -e "\n * The smiles of the compounds have been prepared\n\n"
