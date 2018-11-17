@@ -6,6 +6,8 @@ Possible folder formats (for the results as well as pdbqt folders):
     sub for VFVS version < 8.0
     tar: vfvs version >= 8.0
 
+The <ranking file> needs to contain the collection in the first column and the compound name in the second column.
+
 Modes:
     continue: continues previous runs (e.g. after an error)
     overwrite: deletes existing output files and folders
