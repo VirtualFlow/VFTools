@@ -76,8 +76,8 @@ elif [ "${type}" = "meta" ]; then
                 echo " * Adding file ${temp_folder}/${tranch/.*}/${file} to ${output_filename}"
                 zcat ${temp_folder}/${tranch/.tar}/${file} | grep -v "average\-score" | sed "s/^/${tranch}_${file/.txt.gz} /g"  >> ${output_filename}
             done
+            rm -r ${temp_folder}/${tranch/.*}/
         done
-        rm -r ${temp_folder}/${tranch/.*}/
     done
 fi
 
