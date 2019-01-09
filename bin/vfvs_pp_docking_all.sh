@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #Checking the input arguments
-usage="Usage: vfvs_pp_docking_all.sh <input root folder> <pdbqt_folder> <no of highest ranking compounds> <parallel runs> <compute_min_values>
+usage="Usage: vfvs_pp_docking_all.sh <input root folder> <pdbqt_folder> <no of highest ranking compounds> <parallel runs> <compute_min_values> <collection type>
 
 For each docking the rankings are and the structure files are prepared.
 
@@ -9,14 +9,15 @@ The <input root folder> is the output-folder/complete folder of the original wor
 The command has to be run in the desired output folder.
 All path names have to be relative to the working directory.
 <parallel runs>: Integer
-<compute_min_values>: possible values: yes or no. Useful for VFVS versions below 11.5 where the value was not computed automatically correctly. If set to now the fourth column is used to get the minimum value. Otherwise the minimum is comuted from the colums sixth column to the last column of the summary files."
+<compute_min_values>: possible values: yes or no. Useful for VFVS versions below 11.5 where the value was not computed automatically correctly. If set to now the fourth column is used to get the minimum value. Otherwise the minimum is comuted from the colums sixth column to the last column of the summary files.
+<collection type>: possible values: meta, tar"
 
 if [ "${1}" == "-h" ]; then
    echo -e "\n${usage}\n\n"
    exit 0 
 fi
 
-if [[ "$#" -ne "5" ]]; then
+if [[ "$#" -ne "6" ]]; then
    echo -e "\nWrong number of arguments. Exiting.\n"
    echo -e "${usage}\n\n"
    exit 1
@@ -52,6 +53,7 @@ pdbqt_folder="$2"
 no_highest_ranking_compounds=$3
 parallel_runs="$4"
 compute_min_values="$5"
+type=$6
 
 # Body
 for folder in $(ls ${input_folder}); do

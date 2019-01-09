@@ -1,21 +1,22 @@
 #!/bin/bash
 set -x
 #Checking the input arguments
-usage="Usage: vfvs_pp_docking_single.sh <input root folder> <pdbqt_folder> <no of highest ranking compounds> <compute_min_values>
+usage="Usage: vfvs_pp_docking_single.sh <input root folder> <pdbqt_folder> <no of highest ranking compounds> <compute_min_values> <collection type>
 
 For each docking the rankings are and the structure files are prepared.
 
 The <input root folder> is normally one of the folders in output-folder/complete.
 The command has to be run in the desired output folder.
 All path names have to be relative to the working directory.
-<compute_min_values>: possible values: yes or no. Useful for VFVS versions below 11.7 where the value was not computed automatically correctly. If set to no the fourth column is used to get the minimum value. Otherwise the minimum is comuted from the colums sixth to the final column of the summary files."
+<compute_min_values>: possible values: yes or no. Useful for VFVS versions below 11.7 where the value was not computed automatically correctly. If set to no the fourth column is used to get the minimum value. Otherwise the minimum is comuted from the colums sixth to the final column of the summary files.
+<collection type>: possible values: tar, meta"
 
 if [ "${1}" == "-h" ]; then
    echo -e "\n${usage}\n\n"
    exit 0 
 fi
 
-if [[ "$#" -ne "4" ]]; then
+if [[ "$#" -ne "5" ]]; then
    echo -e "\nWrong number of arguments. Exiting.\n"
    echo -e "${usage}\n\n"
    exit 1
@@ -45,6 +46,7 @@ pdbqt_folder="$2"
 no_highest_ranking_compounds=$3
 compute_min_value=$4
 docking_name="$(basename $input_folder)"
+type=${5}
 
 # Body
 if [ -d "$docking_name" ]; then
@@ -53,7 +55,7 @@ if [ -d "$docking_name" ]; then
 fi
 mkdir -p $docking_name
 cd $docking_name/
-vfvs_pp_firstposes_all_unite.sh ../${input_folder}/summaries/first-poses/ tar firstposes.all
+vfvs_pp_firstposes_all_unite.sh ../${input_folder}/summaries/first-poses/ ${type} firstposes.all
 if [ "${compute_min_value}" == yes ]; then
     first_column_id=6
     last_column_id=$(head -n 1 firstposes.all | wc -w)
