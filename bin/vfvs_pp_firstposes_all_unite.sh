@@ -44,7 +44,7 @@ temp_folder=${output_filename}.tmp
 
 # Directories
 mkdir -p ${temp_folder}  
-
+set -x
 # Main
 if [ "${type}" = "sub" ]; then
     for collection in $(ls ${input_folder}); do
@@ -68,9 +68,8 @@ elif [ "${type}" = "tar" ]; then
         done
     done
 elif [ "${type}" = "meta" ]; then
-    for metatranch in *; do
-        cd $metatranch
-        for tranch in *tar; do
+    for metatranch in $(ls ${input_folder}); do
+        for tranch in $(ls ${input_folder}/${metatranch}); do
             echo " * Extracting ${metatranch}/${tranch} to ${temp_folder}"
             tar -xf ${tranch} -C ${temp_folder} || true
             for file in $(ls ${temp_folder}/${tranch/.*}); do
@@ -79,7 +78,6 @@ elif [ "${type}" = "meta" ]; then
             done
         done
         rm -r ${temp_folder}/${tranch/.*}/
-        cd ..
     done
 fi
 
