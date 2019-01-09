@@ -4,6 +4,7 @@ usage="vfvs_pp_firstposes_all_unite <input folder> <type> <output filename>
 Possible types:
     sub: first poses in sub folders, uncompressed (version 6, 7)
     tar: first poses in tar files (one per tranch, version >= 8)
+    meta: first poses in tar files (one per tranch, version >= 12)
 "
 
 # Standard error response 
@@ -57,7 +58,7 @@ elif [ "${type}" = "tar" ]; then
     cd ${temp_folder}
     for tranch in $(ls ../${input_folder}); do
         echo " * Extracting ${input_folder}/${tranch} to ${temp_folder}"
-        tar -xvf ../${input_folder}/${tranch} || true
+        tar -xf ../${input_folder}/${tranch} || true
     done
     cd ..
     for tranch in $(ls ${temp_folder}); do
@@ -66,7 +67,21 @@ elif [ "${type}" = "tar" ]; then
             zcat ${temp_folder}/${tranch}/${file} | grep -v "average\-score" | sed "s/^/${tranch}_${file/.txt.gz} /g"  >> ${output_filename}
         done
     done
-fi           
+elif [ "${type}" = "meta" ]; then
+    for metatranch in *; do
+        cd $metatranch
+        for tranch in *tar; do
+            echo " * Extracting ${metatranch}/${tranch} to ${temp_folder}"
+            tar -xf ${tranch} -C ${temp_folder} || true
+            for file in $(ls ${temp_folder}/${tranch/.*}); do
+                echo " * Adding file ${temp_folder}/${tranch/.*}/${file} to ${output_filename}"
+                zcat ${temp_folder}/${tranch/.tar}/${file} | grep -v "average\-score" | sed "s/^/${tranch}_${file/.txt.gz} /g"  >> ${output_filename}
+            done
+        done
+        rm -r ${temp_folder}/${tranch/.*}/
+        cd ..
+    done
+fi
 
 echo -e "\n * Cleaning the temporary files *"
 rm -r ${temp_folder}
