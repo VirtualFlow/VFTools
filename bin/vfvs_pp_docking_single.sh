@@ -55,7 +55,7 @@ if [ -d "$docking_name" ]; then
 fi
 mkdir -p $docking_name
 cd $docking_name/
-vfvs_pp_firstposes_all_unite.sh ../${input_folder}/summaries/first-poses/ ${type} firstposes.all
+vfvs_pp_firstposes_all_unite.sh ../${input_folder}/summaries ${type} firstposes.all
 if [ "${compute_min_value}" == yes ]; then
     first_column_id=6
     last_column_id=$(head -n 1 firstposes.all | wc -w)
