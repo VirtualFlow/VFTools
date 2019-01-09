@@ -71,7 +71,7 @@ elif [ "${type}" = "meta" ]; then
     for metatranch in $(ls ${input_folder}); do
         for tranch in $(ls ${input_folder}/${metatranch}); do
             echo " * Extracting ${metatranch}/${tranch} to ${temp_folder}"
-            tar -xf ${tranch} -C ${temp_folder} || true
+            tar -xf ${input_folder}/${metatranch}/${tranch} -C ${temp_folder} || true
             for file in $(ls ${temp_folder}/${tranch/.*}); do
                 echo " * Adding file ${temp_folder}/${tranch/.*}/${file} to ${output_filename}"
                 zcat ${temp_folder}/${tranch/.tar}/${file} | grep -v "average\-score" | sed "s/^/${tranch}_${file/.txt.gz} /g"  >> ${output_filename}
