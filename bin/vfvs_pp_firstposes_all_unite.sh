@@ -40,7 +40,7 @@ echo
 input_folder=${1%/}
 type=$2
 output_filename=${3}
-temp_folder=${output_filename}.tmp
+temp_folder=/dev/shm/cgorgulla/vfvs_pp_firstposes_all_unite
 
 # Directories
 mkdir -p ${temp_folder}  
