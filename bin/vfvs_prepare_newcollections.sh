@@ -133,6 +133,7 @@ rm -r ${output_folder}.tmp/ || true
 cd ..
 echo -e "\n *** The preparation of the intermediate folders has been completed ***"
 
+exit 0
 echo -e "\n *** Starting the preparation of the length.all file ***"
 echo " * If the file ${output_folder}.length.all exists already it will be cleared."
 echo -n "" > ${output_folder}.length.all
