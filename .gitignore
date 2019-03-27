@@ -1,3 +1,5 @@
 .idea/
-bin/.idea/
-*dropbox*
+
+*.pyc
+.dropbox.attr
+*.attr
