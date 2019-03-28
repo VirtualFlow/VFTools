@@ -40,11 +40,11 @@ echo
 input_folder=${1%/}
 type=$2
 output_filename=${3}
-temp_folder=/dev/shm/cgorgulla/vfvs_pp_firstposes_all_unite_$(date | tr " :" "_")
+temp_folder=/dev/shm/cgorgulla/vfvs_pp_firstposes_all_unite_$(date +%s%N)
 
 # Directories
 mkdir -p ${temp_folder}  
-set -x
+
 # Main
 if [ "${type}" = "sub" ]; then
     for collection in $(ls ${input_folder}); do

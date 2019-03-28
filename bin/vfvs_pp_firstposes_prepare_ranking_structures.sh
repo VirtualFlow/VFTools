@@ -65,7 +65,7 @@ if [ "${mode}" = "overwrite" ]; then
     fi
 fi
 mkdir -p ${output_folder}
-set -x
+
 # Loop for each winning structure
 while read -r line; do
     read -r -a array <<< "$line"
