@@ -1,3 +1,5 @@
+# Works, but not useful, better to prepare from the original single smiles file
+
 input_folder=$1
 set -x
 

@@ -2,8 +2,7 @@
 usage="vfvs_pp_firstposes_prepare_ranking.sh <first poses all file> <ranked_column_id> <output filename> <number of highest ranked compounds>
 
 Arguments:
-    ranked_column_id: contains the column id which is used for ranking the compounds (index starts at 1)
-"
+    ranked_column_id: contains the column id which is used for ranking the compounds (index starts at 1)"
 
 # Standard error response 
 error_response_std() {
@@ -20,7 +19,7 @@ if [ "${1}" == "-h" ]; then
     echo -e "\n${usage}\n\n"
     exit 0
 fi
-if [ "$#" -ne "4" ]; then
+if [ "$#" -ne "3" ]; then
     echo -e "\nWrong number of arguments. Exiting.\n"
     echo -e "${usage}\n\n"
     exit 1
@@ -39,7 +38,6 @@ echo
 input_filename=${1}
 column_id=${2}
 output_filename=${3}
-no_of_winners=${4}
 
 # Main
 if [ ! -f ${input_filename}.sorted ]; then
@@ -51,6 +49,5 @@ fi
 
 
 echo " * Preparing the file ${output_filename} containing the winners"
-#head -n "${no_of_winners}" ${input_filename}.sorted | awk -F ' ' '{$3 = sprintf("%5.1f", $3); print $2": "  $3 "  (" $1")"}' > ${output_filename}
-head -n "${no_of_winners}" ${input_filename}.sorted | awk -F ' ' '{$3 = sprintf("%5.1f", $3); printf "%-10s %s %5s\n", $1,  $2, $3}' > ${output_filename}
+awk -F ' ' -v rci=${column_id} '{$3 = sprintf("%5.1f", $rci); printf "%-10s %s %5s\n", $1,  $2, $3}' ${input_filename}.sorted > ${output_filename} # rci = ranked column id
 echo -e "\n * The preparation of the rankings has been completed.\n\n"

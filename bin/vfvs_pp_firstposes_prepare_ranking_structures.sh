@@ -1,17 +1,21 @@
 #!/usr/bin/env bash
 
-usage="vfvs_pp_firstposes_prepare_ranking_structures_v9.sh <pdbqt folder> <results folder> <folder_format> <ranking file> <output folder> <mode>
+usage="vfvs_pp_firstposes_prepare_ranking_structures.sh <pdbqt folder> <results folder> <folder_format> <ranking file> <output folder> <mode>
 
 Possible folder formats (for the results as well as pdbqt folders):
-    sub for VFVS version < 8.0
+    sub: for VFVS version < 8.0
     tar: vfvs version >= 8.0
+
+The <ranking file> needs to contain the collection in the first column and the compound name in the second column.
 
 Modes:
     continue: continues previous runs (e.g. after an error)
     overwrite: deletes existing output files and folders
 "
 
-# Standard error response 
+#Example usage: vfvs_pp_firstposes_prepare_ranking_structures_v10.sh ../${pdbqt_folder} ../${input_folder}/results/ tar firstposes.all.new.ranking.${no_highest_ranking_compounds} firstposes.all.new.ranking.${no_highest_ranking_compounds}.structures continue
+
+# Standard error response
 error_response_std() {
     echo "Error was trapped" 1>&2
     echo "Error in bash script $(basename ${BASH_SOURCE[0]})" 1>&2
@@ -66,7 +70,8 @@ set -x
 while read -r line; do
     read -r -a array <<< "$line"
     collection="${array[0]}"
-    molecule=${array[1]/_*} # removing replicas
+    #molecule=${array[1]/_*} # removing replicas
+    molecule=${array[1]}
     tranch=${collection/_*}
     collection_no=${collection/*_}
 #    name2_padded=$(printf "%05.f" ${collection:5})
@@ -77,22 +82,17 @@ while read -r line; do
     fi
     mkdir -p ${output_folder}/${tranch}/${collection_no}/${molecule}
     cd ${output_folder}/${tranch}/${collection_no}/${molecule}
-    
-    # Original file preparation
     if [ "${format}" == "tar" ]; then
         tar -xvf ../../../../${pdbqt_input_folder}/${tranch}.tar --wildcards "${collection_no}*tar"
         tar -xvf ${collection_no}.pdbqt.gz.tar --wildcards "${molecule}*"
     elif [ "${format}" == "sub" ]; then
-        collection_no_padded=$(printf "%05d" ${collection_no}) 
-        if ! tar -xvf ../../../../${pdbqt_input_folder}/${tranch}/${collection_no_padded}.pdbqt.gz.tar --wildcards "${molecule}*"     ; then      
-            echo " * Error, skipping this ligand" 
-            continue
-        fi
+        collection_no_padded=$(printf "%05d" ${collection_no})
+        tar -xvf ../../../../${pdbqt_input_folder}/${tranch}/${collection_no_padded}.pdbqt.gz.tar --wildcards "${molecule}*"
     fi
-    zcat ${molecule}*.gz > ${molecule}.original.pdbqt
+    gunzip *.gz
+    mv ${molecule}.pdbqt ${molecule}.original.pdbqt
+
     obabel -ipdbqt ${molecule}.original.pdbqt -opdb -O ${molecule}.original.pdb
-    
-    # Result-pdbqt file preparation
     if [ "${format}" == "tar" ]; then
         if ! tar -xvf ../../../../${results_folder}/${tranch}.tar --wildcards "${tranch}/${collection_no}*tar"; then
             echo " * Error, skipping this ligand"
@@ -103,7 +103,7 @@ while read -r line; do
             echo " * Error, skipping this ligand"
             cd ../../../../
             continue
-        fi     
+        fi
     elif [ "${format}" == "sub" ]; then
         if ! tar -xvf ../../../../${results_folder}/${tranch}/${collection_no}.gz.tar --wildcards "${molecule}*"; then
             echo " * Error, skipping this ligand"
@@ -116,13 +116,25 @@ while read -r line; do
         cd ../../../../
         continue
     fi
-    mv ${molecule}.pdbqt docking.out.pdbqt
-    obabel -m -ipdbqt docking.out.pdbqt -opdb -O "${molecule}.rank-.pdb"
-    energy=$(obenergy "${molecule}.rank-1.pdb" | tail -n 1 | awk '{print $4}')
-    obabel -m -ipdbqt docking.out.pdbqt -osdf -O "${molecule}.rank-.sdf"
-    obabel -ipdbqt docking.out.pdbqt -osdf -O "${molecule}.rank-all.sdf"
-    echo "${tranch}_${collection} ${molecule} ${replica_folder} ${energy}" >> "${molecule}.rank-1.energy"
-    printf "%s  %s %10s  %s\n" "${tranch}_${collection_no}" "${molecule}" "${energy}" "${replica_folder}" >> ../../../../${ranking_file}.energies
+    for file in $(ls *replica*pdbqt); do
+        replica=${file/*_}
+        replica=${replica/.*}
+        mkdir -p ${replica}
+        mv $file ${replica}/${tranch}_${collection_no}_${file}
+    done
+    rm *tar
+    rm -r ${tranch}
+    for replica_folder in $(ls -d replica*); do
+        cd ${replica_folder}
+        mv *pdbqt docking.out.pdbqt
+        obabel -m -ipdbqt docking.out.pdbqt -opdb -O "${molecule}.rank-.pdb"
+        energy=$(obenergy "${molecule}.rank-1.pdb" | tail -n 1 | awk '{print $4}')
+        obabel -m -ipdbqt docking.out.pdbqt -osdf -O "${molecule}.rank-.sdf"
+        obabel -ipdbqt docking.out.pdbqt -osdf -O "${molecule}.rank-all.sdf"
+        echo "${tranch}_${collection} ${molecule} ${replica_folder} ${energy}" >> "${molecule}.rank-1.energy"
+        printf "%s  %s %10s  %s\n" "${tranch}_${collection_no}" "${molecule}" "${energy}" "${replica_folder}" >> ../../../../../${ranking_file}.energies
+        cd ..
+    done
     cd ../../../../
 done < ${ranking_file}
 

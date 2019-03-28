@@ -1,23 +1,26 @@
 #!/bin/bash
 
 #Checking the input arguments
-usage="Usage: vfvs_pp_docking_all.sh <input root folder> <pdbqt_folder> <no of highest ranking compounds> <parallel runs> <compute_min_values> <collection type>
+usage="Usage: vfvs_pp_ranking_all.sh <input root folder> <parallel runs> <library_format>
 
-For each docking the rankings are and the structure files are prepared.
 
-The <input root folder> is the output-folder/complete folder of the original workflow.
-The command has to be run in the desired output folder.
-All path names have to be relative to the working directory.
-<parallel runs>: Integer
-<compute_min_values>: possible values: yes or no. Useful for VFVS versions below 11.5 where the value was not computed automatically correctly. If set to now the fourth column is used to get the minimum value. Otherwise the minimum is comuted from the colums sixth column to the last column of the summary files.
-<collection type>: possible values: meta, tar"
+Creates the full ranking of all docking compounds for each docking scenario.
+
+All pathnames have to be relative to the working directory.
+
+Options:
+    <input root folder>: The folder containing the docking scenario output fodlers, normally the output-folder/complete folder.
+    <parallel runs>: Integer
+    <library format>: Possible values:
+                           * tar
+                           * meta"
 
 if [ "${1}" == "-h" ]; then
    echo -e "\n${usage}\n\n"
    exit 0 
 fi
 
-if [[ "$#" -ne "6" ]]; then
+if [[ "$#" -ne "3" ]]; then
    echo -e "\nWrong number of arguments. Exiting.\n"
    echo -e "${usage}\n\n"
    exit 1
@@ -49,11 +52,8 @@ trap 'clean_exit' EXIT
 
 # Variables
 input_folder="$1"
-pdbqt_folder="$2"
-no_highest_ranking_compounds=$3
-parallel_runs="$4"
-compute_min_values="$5"
-type=$6
+parallel_runs="$2"
+library_format="$3"
 
 # Body
 for folder in $(ls ${input_folder}); do
@@ -62,7 +62,7 @@ for folder in $(ls ${input_folder}); do
         jobs
         if [ "${job_count}" -lt "${parallel_runs}" ]; then
             echo " * Starting to prepare the firstposes of docking-scenario $folder"
-            vfvs_pp_docking_single.sh $input_folder/$folder $pdbqt_folder $no_highest_ranking_compounds $compute_min_values &
+            vfvs_pp_ranking_single.sh $input_folder/$folder ${library_format} &
             break
         else
             echo " * Maximum number of parallel runs reached. Waiting..."

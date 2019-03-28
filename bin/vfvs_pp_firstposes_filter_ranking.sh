@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+d#!/usr/bin/env bash
 usage="vfvs_pp_firstposes_filter_ranking.sh <ranking file> <energie file> <max obabel energy> <collection regex> <output filename>
 
 The ranking file needs to have in
