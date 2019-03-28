@@ -66,8 +66,8 @@ for folder in $(ls ${input_folder}); do
             break
         else
             echo " * Maximum number of parallel runs reached. Waiting..."
-            sleep 1
         fi
+        sleep 1
     done
 done
 
