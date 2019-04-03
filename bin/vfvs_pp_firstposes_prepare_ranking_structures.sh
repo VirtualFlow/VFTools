@@ -1,10 +1,11 @@
 #!/usr/bin/env bash
 
-usage="vfvs_pp_firstposes_prepare_ranking_structures.sh <pdbqt folder> <results folder> <folder_format> <ranking file> <output folder> <mode>
+usage="vfvs_pp_firstposes_prepare_ranking_structures.sh <results folder> <folder_format> <ranking file> <output folder> <mode>
 
 Possible folder formats (for the results as well as pdbqt folders):
     sub: for VFVS version < 8.0
     tar: vfvs version >= 8.0
+    meta: meta-tranches
 
 The <ranking file> needs to contain the collection in the first column and the compound name in the second column.
 
@@ -13,6 +14,7 @@ Modes:
     overwrite: deletes existing output files and folders
 "
 
+set -x 
 #Example usage: vfvs_pp_firstposes_prepare_ranking_structures_v10.sh ../${pdbqt_folder} ../${input_folder}/results/ tar firstposes.all.new.ranking.${no_highest_ranking_compounds} firstposes.all.new.ranking.${no_highest_ranking_compounds}.structures continue
 
 # Standard error response
@@ -30,7 +32,7 @@ if [ "${1}" == "-h" ]; then
     echo -e "\n${usage}\n\n"
     exit 0
 fi
-if [ "$#" -ne "6" ]; then
+if [ "$#" -ne "5" ]; then
     echo -e "\nWrong number of arguments. Exiting.\n"
     echo -e "${usage}\n\n"
     exit 1
@@ -45,12 +47,11 @@ echo "*********************************************************************"
 echo
 
 # Variables
-pdbqt_input_folder=${1}
-results_folder=${2}
-format=${3}
-ranking_file=${4}
-output_folder=${5}
-mode=${6}
+results_folder=${1}
+format=${2}
+ranking_file=${3}
+output_folder=${4}
+mode=${5}
 
 # Preparing required folders and files
 if [ "${mode}" = "overwrite" ]; then
@@ -82,17 +83,7 @@ while read -r line; do
     fi
     mkdir -p ${output_folder}/${tranch}/${collection_no}/${molecule}
     cd ${output_folder}/${tranch}/${collection_no}/${molecule}
-    if [ "${format}" == "tar" ]; then
-        tar -xvf ../../../../${pdbqt_input_folder}/${tranch}.tar --wildcards "${collection_no}*tar"
-        tar -xvf ${collection_no}.pdbqt.gz.tar --wildcards "${molecule}*"
-    elif [ "${format}" == "sub" ]; then
-        collection_no_padded=$(printf "%05d" ${collection_no})
-        tar -xvf ../../../../${pdbqt_input_folder}/${tranch}/${collection_no_padded}.pdbqt.gz.tar --wildcards "${molecule}*"
-    fi
-    gunzip *.gz
-    mv ${molecule}.pdbqt ${molecule}.original.pdbqt
 
-    obabel -ipdbqt ${molecule}.original.pdbqt -opdb -O ${molecule}.original.pdb
     if [ "${format}" == "tar" ]; then
         if ! tar -xvf ../../../../${results_folder}/${tranch}.tar --wildcards "${tranch}/${collection_no}*tar"; then
             echo " * Error, skipping this ligand"
@@ -110,11 +101,26 @@ while read -r line; do
             cd ../../../../
             continue
         fi
-    fi
-    if ! gunzip *gz; then
-        echo " * Error, skipping this ligand"
-        cd ../../../../
-        continue
+    elif [ "${format}" == "meta" ]; then
+        metatranch=${tranch:0:2}
+        if ! tar -xvf ../../../../${results_folder}/${metatranch}/${tranch}.tar --wildcards "${tranch}/${collection_no}.tar.gz"; then
+            echo " * Error, skipping this ligand"
+            cd ../../../../
+            continue
+        fi
+        if ! tar -xvf ${tranch}/${collection_no}.tar.gz --wildcards "${collection_no}/${molecule}*"; then
+            echo " * Error, skipping this ligand"
+            cd ../../../../
+            continue
+        fi
+        mv ${collection_no}/*pdbqt ./
+    fi 
+    if [ ! "${format}" == "meta" ]; then
+        if ! gunzip *gz; then
+            echo " * Error, skipping this ligand"
+            cd ../../../../
+            continue
+        fi
     fi
     for file in $(ls *replica*pdbqt); do
         replica=${file/*_}
@@ -122,8 +128,11 @@ while read -r line; do
         mkdir -p ${replica}
         mv $file ${replica}/${tranch}_${collection_no}_${file}
     done
-    rm *tar
-    rm -r ${tranch}
+    if [[ "${format}" == "tar" ]] || [[ "${format}" == "sub"]]; then
+        rm *tar || true        
+    fi
+
+    rm -r ${tranch}*
     for replica_folder in $(ls -d replica*); do
         cd ${replica_folder}
         mv *pdbqt docking.out.pdbqt
