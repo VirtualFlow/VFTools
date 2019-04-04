@@ -128,7 +128,7 @@ while read -r line; do
         mkdir -p ${replica}
         mv $file ${replica}/${tranch}_${collection_no}_${file}
     done
-    if [[ "${format}" == "tar" ]] || [[ "${format}" == "sub"]]; then
+    if [[ "${format}" == "tar" ]] || [[ "${format}" == "sub" ]]; then
         rm *tar || true        
     fi
 
