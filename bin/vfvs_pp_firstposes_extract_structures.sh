@@ -30,7 +30,7 @@ while IFS= read -r line; do
    index=$((index+1))
    read -r -a array <<< "$line"
    collection=${array[0]}
-   if [ -z" ${collection}" ]; then
+   if [ -z "${collection}" ]; then
        continue
    fi
    tranch=${array/_*}
@@ -39,9 +39,9 @@ while IFS= read -r line; do
    minindex="${array[2]}"
    echo "Extracting $tranch, $collection_id, $zinc_id, $minindex"
    if [ "${4}" == "rank1" ]; then
-       cp $2/${tranch}/${collection_id}/${zinc_id}/replica-${minindex}/${zinc_id}.rank-1.pdb $3/${index}_${zinc_id}_rank1.pdb
+       cp $2/${tranch}/${collection_id}/${zinc_id}/replica-${minindex}/${zinc_id}.rank-1.pdb $3/${index}_${zinc_id}_rank1.pdb || true
    elif [ "${4}" == "all" ]; then
-       cp $2/${tranch}/${collection_id}/${zinc_id}/replica-${minindex}/docking.out.pdbqt $3/${index}_${zinc_id}.all.pdbqt
+       cp $2/${tranch}/${collection_id}/${zinc_id}/replica-${minindex}/docking.out.pdbqt $3/${index}_${zinc_id}.all.pdbqt || true
    fi
    echo
 done < $1
