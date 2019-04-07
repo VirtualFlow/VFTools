@@ -27,9 +27,12 @@ mkdir -p ${3}
 
 index=0
 while IFS= read -r line; do
-    index=$((index+1))
+   index=$((index+1))
    read -r -a array <<< "$line"
    collection=${array[0]}
+   if [ -z" ${collection}" ]; then
+       continue
+   fi
    tranch=${array/_*}
    collection_id=${array/*_}
    zinc_id="${array[1]}"
