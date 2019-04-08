@@ -43,5 +43,8 @@ while IFS= read -r line; do
    elif [ "${4}" == "all" ]; then
        cp $2/${tranch}/${collection_id}/${zinc_id}/replica-${minindex}/docking.out.pdbqt $3/${index}_${zinc_id}.all.pdbqt || true
    fi
+   if [ -f $2/${tranch}/${collection_id}/${zinc_id}/${zinc_id}_replica-${minindex}.flexres.pdb ]; then
+       cp $2/${tranch}/${collection_id}/${zinc_id}/${zinc_id}_replica-${minindex}.flexres.pdb $3/${index}_${zinc_id}.all.flexres.pdb
+   fi
    echo
 done < $1
