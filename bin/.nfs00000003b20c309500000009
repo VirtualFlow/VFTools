@@ -45,8 +45,6 @@ while IFS= read -r line; do
    fi
    if [ -f $2/${tranch}/${collection_id}/${zinc_id}/${zinc_id}_replica-${minindex}.flexres.pdb ]; then
        cp $2/${tranch}/${collection_id}/${zinc_id}/${zinc_id}_replica-${minindex}.flexres.pdb $3/${index}_${zinc_id}.all.flexres.pdb
-   elif [ -f $2/${tranch}/${collection_id}/${zinc_id}/${collection_id}/${zinc_id}_replica-${minindex}.flexres.pdb ]; then
-       cp $2/${tranch}/${collection_id}/${zinc_id}/${collection_id}/${zinc_id}_replica-${minindex}.flexres.pdb $3/${index}_${zinc_id}.all.flexres.pdb 
    fi
    echo
 done < $1
