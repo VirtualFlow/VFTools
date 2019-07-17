@@ -103,7 +103,9 @@ for folder in $(eval echo ${folder_regex}); do
       IFS='\t ' read -a line_array <<< ${line}
       echo "${line_array[${smiles_column_index}]}" > "${subfolder}/${line_array[${name_column_index}]}.smi"
     done < ${file}
-    echo "     * From the file ${file} $(ls ${subfolder} | wc -l) individual SMILES files were created"
+    collection_size=$(ls ${subfolder} | wc -l)
+    echo "     * From the file ${file} ${collection_size} individual SMILES files were created"
+    #echo "${folder}_${subfolder} ${collection_size}" >> length.all
 
     # Packing the files into a compressed archive
     echo "     * Creating compressed tar archive"
@@ -123,7 +125,8 @@ for folder in $(eval echo ${folder_regex}); do
 
   # Creating archive for current tranch
   echo "   * Creating archive for tranch ${folder}"
-  tar -cf ${folder/\/}.tar ${folder}
+  mkdir -p ${folder:0:2}
+  tar -cf ${folder:0:2}/${folder/\/}.tar ${folder}
 
   # Removing tranch folder
   echo "   * Removing tranch folder ${folder}"
