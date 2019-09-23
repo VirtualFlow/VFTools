@@ -62,7 +62,8 @@ molecule_counter=1
 collection_counter=1
 tranch_counter=1
 cd ${temp_folder}
-while read -r line; do
+while false; do
+#while read -r line; do
     read -r -a array <<< "$line"
     old_collection=${collection}
     old_tranch=${tranch}
@@ -118,7 +119,8 @@ while read -r line; do
         tar -xOf ${pdbqt_input_folder}/${tranch}/${collection_no}.pdbqt.gz.tar ${molecule}.pdbqt.gz > ../${output_folder}.tmp2/${collection_new}/${molecule}.pdbqt.gz || true
     elif [ "${pdbqt_folder_format}" == "meta" ]; then
         if [ "${new_collection}" == "true" ]; then 
-            rm -r ${old_tranch} || true
+            echo " * Extracting collection ${collection}"
+            rm -r ${old_tranch} &>/dev/null || true
             tar -xf ../${pdbqt_input_folder}/${metatranch}/${tranch}.tar ${tranch}/${collection_no}.tar.gz || true
             cd ${tranch}
             tar -xzf ${collection_no}.tar.gz || true
@@ -129,11 +131,10 @@ while read -r line; do
         echo -e "Error: The argument pdbqt_folder_format has an unsupported value: ${pdbqt_folder_format}. Supported are sub_tar and tar_tar"
     fi
 done < "../${ligand_file}"
-rm -r ${output_folder}.tmp/ || true
 cd ..
+rm -r ${output_folder}.tmp/ || true
 echo -e "\n *** The preparation of the intermediate folders has been completed ***"
 
-exit 0
 echo -e "\n *** Starting the preparation of the length.all file ***"
 echo " * If the file ${output_folder}.length.all exists already it will be cleared."
 echo -n "" > ${output_folder}.length.all
@@ -145,7 +146,6 @@ for folder in $(ls ${output_folder}.tmp2); do
     cd ../..
 done
 echo -e "\n *** The preparation of the length.all file has been completed ***"
-set -x
 echo -e "\n *** Starting the preparation of the tar archives ***"
 cd ${output_folder}.tmp2
 for folder in $(ls); do

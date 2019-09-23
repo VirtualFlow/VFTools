@@ -4,7 +4,8 @@ usage="vfvs_pp_firstposes_all_unite <input folder> <type> <output filename>
 Possible types:
     sub: first poses in sub folders, uncompressed (version 6, 7)
     tar: first poses in tar files (one per tranch, version >= 8)
-    meta: first poses in tar files (one per tranch, version >= 12)
+    meta_tranch_: first poses in tar files (one per tranch, in meta-tranch folders)
+    meta_collection: first poses gz files (one per collection)
 "
 
 # Standard error response 
@@ -67,7 +68,7 @@ elif [ "${type}" = "tar" ]; then
             zcat ${temp_folder}/${tranch}/${file} | grep -v "average\-score" | sed "s/^/${tranch}_${file/.txt.gz} /g"  >> ${output_filename}
         done
     done
-elif [ "${type}" = "meta" ]; then
+elif [ "${type}" = "meta_tranch" ]; then
     for metatranch in $(ls ${input_folder}); do
         for tranch in $(ls ${input_folder}/${metatranch}); do
             echo " * Extracting ${metatranch}/${tranch} to ${temp_folder}"
@@ -77,6 +78,16 @@ elif [ "${type}" = "meta" ]; then
                 zcat ${temp_folder}/${tranch/.tar}/${file} | grep -v "average\-score" >> ${output_filename} || true
             done
             rm -r ${temp_folder}/${tranch/.*}/ || true
+        done
+    done
+elif [ "${type}" = "meta_collection" ]; then
+    for metatranch in $(ls ${input_folder}); do
+        for tranch in $(ls ${input_folder}/${metatranch}); do
+            echo " * Extracting ${metatranch}/${tranch} to ${temp_folder}"
+            for file in ${input_folder}/${metatranch}/${tranch}/*; do
+                echo " * Adding file ${file} to ${output_filename}"
+                zcat ${file} | grep -v "average\-score" >> ${output_filename} || true
+            done
         done
     done
 fi
