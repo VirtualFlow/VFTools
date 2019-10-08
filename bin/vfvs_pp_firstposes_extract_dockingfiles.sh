@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
 
-usage="vfvs_pp_firstposes_extract_dockingfiles.sh <input compound file> <results folder> <output folder>"
+usage="vfvs_pp_firstposes_extract_dockingfiles.sh <input compound file> <results folder> <output folder>
+
+
+In the compound file, the first column has to be the collection, the second column has to be the compound ID"
 
 # Standard error response 
 error_response_std() {
