@@ -20,7 +20,7 @@ if [[ "$#" -ne "4" ]]; then
    echo -e "${usage}\n\n"
    exit 1
 fi
-set -x
+
 # Standard error response 
 error_response_nonstd() {
     echo

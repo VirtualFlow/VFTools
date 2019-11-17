@@ -1,5 +1,5 @@
 # Usage: extract compounds_file structure_dir output_dir
-
+set -x
 index=0
 while IFS= read -r line; do
     index=$((index+1))
