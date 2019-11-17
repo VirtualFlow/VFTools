@@ -10,9 +10,8 @@ Currently, there exist two versions of VirtualFlow, which are tailored to differ
 - [VFLP: VirtualFlow for Ligand Preparation](https://github.com/VirtualFlow/VFLP)
 - [VFVS : VirtualFlow for Virtual Screenings](https://github.com/VirtualFlow/VFVS)
 
-They use the same core technology regarding the workflow management and parallelization, and they can be used individually or in concert with each other. Additional versions are expected to arrive in the future. Pre-built ready-to-dock ligand libraries for VFVS are available for free (in the download section). 
 
-VFTools is a package of additional tools which can be useful when using VirtualFlow, for example for preparing workflows or postprocessing completed workflows.
+VFTools is a a loose collection of additional tools and scripts which can be useful when using VirtualFlow, for example for preparing workflows or postprocessing completed workflows.
 
 
 ### Overview of Resources
