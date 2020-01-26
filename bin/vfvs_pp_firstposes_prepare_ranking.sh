@@ -58,5 +58,5 @@ fi
 
 
 echo " * Preparing the file ${output_filename} containing the winners"
-awk -F ' ' -v rci=${column_id} '{$3 = sprintf("%5.1f", $rci); printf "%-10s %s %5s %s\n", $1,  $2, $3, $(NF-1)}' ${input_filename}.minindex.sorted > ${output_filename} # rci = ranked column id
+awk -F ' ' -v rci=${column_id} '{$3 = sprintf("%5.1f", $rci); printf "%-10s %s %5s %s\n", $1,  $2, $3, $NF}' ${input_filename}.minindex.sorted > ${output_filename} # rci = ranked column id
 echo -e "\n * The preparation of the rankings has been completed.\n\n"
