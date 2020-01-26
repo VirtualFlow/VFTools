@@ -57,7 +57,7 @@ fi
 mkdir -p $docking_name
 cd $docking_name/
 vfvs_pp_firstposes_all_unite.sh ../${input_folder}/summaries ${library_format} firstposes.all
-vfvs_pp_firstposes_prepare_ranking.sh firstposes.all 4 firstposes.all.minindexsorted.clean
+vfvs_pp_firstposes_prepare_ranking.sh firstposes.all 4 firstposes.all.minindex.sorted.clean
 
 
 cd ..
