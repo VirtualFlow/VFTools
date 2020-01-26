@@ -13,7 +13,8 @@ Options:
     <parallel runs>: Integer
     <library format>: Possible values:
                            * tar
-                           * meta"
+                           * meta_tranch
+                           * meta_collection"
 
 if [ "${1}" == "-h" ]; then
    echo -e "\n${usage}\n\n"
