@@ -59,7 +59,7 @@ while read -r line; do
         smiles=$(grep -w "${compound_id2}" ${smiles_folder}/${metatranch}/${tranch}.* | awk '{print $1}')
         exit_code="$?"
     fi
-    echo $exit_code
+    
     if [ ${exit_code} == 0 ]; then
         echo "${smiles} ${compound_id}" >> ${output_file}
         echo "Compound ${compound_id2} of collection ${collection} successfully extracted"
