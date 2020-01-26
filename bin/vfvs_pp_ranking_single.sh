@@ -1,5 +1,5 @@
 #!/bin/bash
-set -x
+
 #Checking the input arguments
 usage="Usage: vfvs_pp_ranking_single.sh <docking_scenario_output_folder> <library_format>
 
@@ -11,7 +11,9 @@ Options:
     <docking_scenario_output_folder>: The <docking scenario output folder> is one of the folders in output-folder/complete.
     <library_format>: Possible values:
                            * tar
-                           * meta"
+                           * meta
+                           * meta_tranch
+                           * meta_collection"
 
 if [ "${1}" == "-h" ]; then
    echo -e "\n${usage}\n\n"
@@ -51,10 +53,12 @@ if [ -d "$docking_name" ]; then
     echo -e " * The folder $docking_name exists already, exiting." 
     exit 0
 fi
+
 mkdir -p $docking_name
 cd $docking_name/
 vfvs_pp_firstposes_all_unite.sh ../${input_folder}/summaries ${library_format} firstposes.all
-vfvs_pp_firstposes_prepare_ranking.sh firstposes.all 4 firstposes.all.sorted.clean
+vfvs_pp_firstposes_prepare_ranking.sh firstposes.all 4 firstposes.all.minindexsorted.clean
+
 
 cd ..
 
