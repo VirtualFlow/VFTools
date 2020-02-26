@@ -42,12 +42,12 @@ output_filename=${3}
 # Main
 if [ ! -f ${input_filename}.sorted ]; then
     echo " * Sorting the first poses"
-    nice -n 20 ionice -c2 -n7 cat ${input_filename} | LC_ALL=C sort -k${column_id} -n | column -t > ${input_filename}.sorted
+    nice -n 20 ionice -c2 -n7     LC_ALL=C sort -k${column_id} -n ${input_filename} > ${input_filename}.sorted
 else
     echo " * Found the file ${input_filename}.sorted. Using it in the further processing"
 fi
 
 
 echo " * Preparing the file ${output_filename} containing the winners"
-awk -F ' ' -v rci=${column_id} '{$3 = sprintf("%5.1f", $rci); printf "%-10s %s %5s\n", $1,  $2, $3}' ${input_filename}.sorted | column -t > ${output_filename} # rci = ranked column id
+awk -F ' ' -v rci=${column_id} '{$3 = sprintf("%5.1f", $rci); printf "%-10s %s %5s\n", $1,  $2, $3}' ${input_filename}.sorted > ${output_filename} # rci = ranked column id
 echo -e "\n * The preparation of the rankings has been completed.\n\n"
