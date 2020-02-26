@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
-usage="vfvs_pp_firstposes_prepare_ranking.sh <first poses all file> <ranked_column_id> <output filename> <number of highest ranked compounds>
+set -x
+usage="vfvs_pp_firstposes_prepare_ranking.sh <first poses all file> <ranked_column_id> <output filename>
 
 Arguments:
     ranked_column_id: contains the column id which is used for ranking the compounds (index starts at 1)"
@@ -40,14 +41,22 @@ column_id=${2}
 output_filename=${3}
 
 # Main
-if [ ! -f ${input_filename}.sorted ]; then
+
+
+awk '{m=$6;for(i=5;i<=NF;i++)if($i<=m){m=$i; minindex=i};print $0, minindex-5}' ${input_filename} > ${input_filename}.minindex
+#sort -k 2,2 -t "," -u ${input_filename}.minindex > ${input_filename}irstposes.all.minindex.csv
+#sed -i '1 i\Collection,ZINC_ID,mindockingindex' firstposes.all.minindex.csv
+
+
+
+if [ ! -f ${input_filename}.minindex.sorted ]; then
     echo " * Sorting the first poses"
-    nice -n 20 ionice -c2 -n7     LC_ALL=C sort -k${column_id} -n ${input_filename} > ${input_filename}.sorted
+    LC_ALL=C sort -k${column_id} -n ${input_filename}.minindex > ${input_filename}.minindex.sorted
 else
-    echo " * Found the file ${input_filename}.sorted. Using it in the further processing"
+    echo " * Found the file ${input_filename}.minindex.sorted. Using it in the further processing"
 fi
 
 
 echo " * Preparing the file ${output_filename} containing the winners"
-awk -F ' ' -v rci=${column_id} '{$3 = sprintf("%5.1f", $rci); printf "%-10s %s %5s\n", $1,  $2, $3}' ${input_filename}.sorted > ${output_filename} # rci = ranked column id
+awk -F ' ' -v rci=${column_id} '{$3 = sprintf("%5.1f", $rci); printf "%-10s %s %5s %s\n", $1,  $2, $3, $NF}' ${input_filename}.minindex.sorted > ${output_filename} # rci = ranked column id
 echo -e "\n * The preparation of the rankings has been completed.\n\n"

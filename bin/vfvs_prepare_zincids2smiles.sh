@@ -20,7 +20,7 @@ if [[ "$#" -ne "4" ]]; then
    echo -e "${usage}\n\n"
    exit 1
 fi
-set -x
+
 # Standard error response 
 error_response_nonstd() {
     echo
@@ -41,8 +41,8 @@ trap 'clean_exit' EXIT
 # Variables
 input_file="$1"
 smiles_folder="$2"
-output_file="$3"
-smiles_folder_format="$4"
+smiles_folder_format="$3"
+output_file="$4"
 
 # Body
 while read -r line; do 
@@ -53,12 +53,13 @@ while read -r line; do
     metatranch=${tranch:0:2}
     trap '' ERR
     if [ "${smiles_folder_format}" == "tranch" ]; then
-        smiles=$(grep -w "${compound_id}" "${smiles_folder}/${tranch}/${collection}.smi" | awk '{print $1}')
+        smiles=$(grep -w "${compound_id/_*}" ${smiles_folder}/${tranch}/${collection}.* | awk '{print $1}')
         exit_code="$?"
     elif [ "${smiles_folder_format}" == "metatranch" ]; then
-        smiles=$(grep -w "${compound_id2}" "${smiles_folder}/${metatranch}/${tranch}.smi" | awk '{print $1}')
+        smiles=$(grep -w "${compound_id2}" ${smiles_folder}/${metatranch}/${tranch}.* | awk '{print $1}')
         exit_code="$?"
     fi
+    
     if [ ${exit_code} == 0 ]; then
         echo "${smiles} ${compound_id}" >> ${output_file}
         echo "Compound ${compound_id2} of collection ${collection} successfully extracted"

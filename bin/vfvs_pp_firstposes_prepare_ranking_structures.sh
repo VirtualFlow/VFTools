@@ -96,26 +96,42 @@ while read -r line; do
             continue
         fi
     elif [ "${format}" == "sub" ]; then
-        if ! tar -xvf ../../../../${results_folder}/${tranch}/${collection_no}.gz.tar --wildcards "${molecule}*"; then
+        if ! tar -xvf ../../../../${results_folder}/${tranch}/${collection_no}.gz.tar --wildcards "${molecule}_replica*"; then
             echo " * Error, skipping this ligand"
             cd ../../../../
             continue
         fi
-    elif [ "${format}" == "meta" ]; then
+    elif [ "${format}" == "meta_tranch" ]; then
         metatranch=${tranch:0:2}
         if ! tar -xvf ../../../../${results_folder}/${metatranch}/${tranch}.tar --wildcards "${tranch}/${collection_no}.tar.gz"; then
             echo " * Error, skipping this ligand"
             cd ../../../../
             continue
         fi
-        if ! tar -xvf ${tranch}/${collection_no}.tar.gz --wildcards "${collection_no}/${molecule}*"; then
+        if ! tar -xvf ${tranch}/${collection_no}.tar.gz --wildcards "${collection_no}/${molecule}_replica*"; then
             echo " * Error, skipping this ligand"
             cd ../../../../
             continue
         fi
         mv ${collection_no}/*pdbqt ./
-    fi 
-    if [ ! "${format}" == "meta" ]; then
+    elif [ "${format}" == "meta_collection" ]; then
+        metatranch=${tranch:0:2}
+        if ! cp ../../../../${results_folder}/${metatranch}/${tranch}/${collection_no}.tar.gz ./; then
+            echo " * Error, skipping this ligand"
+            cd ../../../../
+            continue
+        fi
+        mkdir ${tranch}/
+        mv ${collection_no}.tar.gz ${tranch}/
+        if ! tar -xvf ${tranch}/${collection_no}.tar.gz --wildcards "${collection_no}/${molecule}_replica*"; then
+            echo " * Error, skipping this ligand"
+            cd ../../../../
+            continue
+        fi
+        mv ${collection_no}/*pdbqt ./
+    fi
+
+    if [[ ! "${format}" == "meta"* ]]; then
         if ! gunzip *gz; then
             echo " * Error, skipping this ligand"
             cd ../../../../
