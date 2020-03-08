@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-set -x
 usage="vfvs_pp_firstposes_prepare_ranking.sh <first poses all file> <ranked_column_id> <output filename>
 
 Arguments:
