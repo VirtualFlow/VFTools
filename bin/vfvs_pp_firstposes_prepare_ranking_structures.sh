@@ -14,7 +14,6 @@ Modes:
     overwrite: deletes existing output files and folders
 "
 
-set -x 
 #Example usage: vfvs_pp_firstposes_prepare_ranking_structures_v10.sh ../${pdbqt_folder} ../${input_folder}/results/ tar firstposes.all.new.ranking.${no_highest_ranking_compounds} firstposes.all.new.ranking.${no_highest_ranking_compounds}.structures continue
 
 # Standard error response

@@ -36,9 +36,6 @@ clean_exit() {
 }
 trap 'clean_exit' EXIT
 
-
-
-set -x
 index=0
 while IFS= read -r line; do
     index=$((index+1))
