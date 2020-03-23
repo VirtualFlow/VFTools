@@ -50,7 +50,7 @@ awk '{m=$6;for(i=5;i<=NF;i++)if($i<=m){m=$i; minindex=i};print $0, minindex-5}' 
 
 if [ ! -f ${input_filename}.minindex.sorted ]; then
     echo " * Sorting the first poses"
-    LC_ALL=C sort -k${column_id} -n ${input_filename}.minindex > ${input_filename}.minindex.sorted
+    LC_ALL=C sort -T . -k${column_id} -n ${input_filename}.minindex > ${input_filename}.minindex.sorted
 else
     echo " * Found the file ${input_filename}.minindex.sorted. Using it in the further processing"
 fi
