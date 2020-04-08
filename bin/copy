@@ -5,7 +5,7 @@ usage="Usage: vfvs_pp_prepare_dwar.sh <smiles_collection_folder> <smiles_collect
 
 The script should be run in the dwar root folder, and contain a subfolder called 'docking_scores'.
 The folder 'docking_scores' should contain the files containing the compounds,collection, and docking scores.
-These files need to be in text-format (space separated), have the filename ending 'original.txt', and contain the following columns:
+These files need to be in text-format (space separated), with the following columns:
     * column 1: Collection
     * column 2: Compound ID
     * column 3: Docking score
@@ -56,7 +56,7 @@ database_type="$3"
 
 # Preparing the docking scores
 cd docking_scores
-for file in *original; do
+for file in *all; do
     awk '{print $2, $3}' $file | grep -e "-[0-9]*.[0-9]*" > $file.scores
 done
 for file in *scores; do
@@ -65,18 +65,18 @@ done
 for file in *unique; do
     sed "1s/^/Compound_ID Score_${file/.*}\n/" $file | column -t |  sed "s/ \+/,/g" > $file.heading.csv
 done
-awk '{print $1, $2}' *original | sort | uniq > compounds.all.collections+compoundids.unique
-awk '{print $1","$2}' *original | sort -k 2,2 -t',' -u > compounds.all.collections_full+compoundids.unique.csv
+awk '{print $1, $2}' *all | sort | uniq > compounds.all.collections+compoundids.unique
+awk '{print $1","$2}' *all | sort -k 2,2 -t',' -u > compounds.all.collections_full+compoundids.unique.csv
 sed -i  "1s/^/Collection,Compound_ID\n/g" compounds.all.collections_full+compoundids.unique.csv
 cd ..
 
 
 # new smiles way
-mkdir -p smiles-original
+mkdir smiles-original
 cd smiles-original
 #vfvs_prepare_compoundids2smiles.sh ../docking_scores/compounds.all.collections+compoundids.unique ../../../../../../../vflp/collections/compound15-20161102-splitted_sub compounds.all.smile
 # Adjusting the file vfvs_prepare_compoundid2smiles accordingly: reading any file ending (txt instead of smi), removing the tautomers from the compound filenames). We should do: Prepare a new smiles library with the tautomers of Compound15_2018 - we prepared it, just need to extract it and prepare it. And adjust the vfvs_prepare_compoundid2smiles file accordingly.
-#vfvs_prepare_compoundids2smiles.sh ../docking_scores/compounds.all.collections+compoundids.unique ../${smiles_collection_folder} ${smiles_collection_folder_format} compounds.all.smiles
+vfvs_prepare_compoundids2smiles.sh ../docking_scores/compounds.all.collections+compoundids.unique ../../VF/vflp/collections/compound15_20180825.txt.splitted1000/ ${smiles_collection_folder_format} smiles.all
 sort compounds.all.smiles | uniq | tr " " "," > compounds.all.smiles.csv
 sed -i "1s/^/SMILES,Compound-ID\n/" compounds.all.smiles.csv
 cd ..
@@ -101,9 +101,9 @@ if [ "${database_type}" == "ZINC15" ]; then
     splitting_size=100
     cd compound_ids/split_${splitting_size}
     mkdir -p ../../vendors/split_${splitting_size}
-    while true; do grep -i "doctype" ../../vendors/split_${splitting_size}/* | awk -F ":" '{print $1}' | uniq | xargs rm -v || true; wc -l ../../vendors/split_${splitting_size}/* | grep " 0 " | awk '{print $2}' | xargs rm -v || true; wc -l ../../vendors/split_${splitting_size}/* | grep " [0-8][0-9] "  | awk '{print $2}' | xargs rm -v || true; for file in *; do while true; do if [ "$(jobs | wc -l)" -lt "10" ]; then break; else echo -e "\nWaiting for free slot\n"; sleep 1; fi; done; if [ ! -f ../../vendors/split_${splitting_size}/${file/compound_ids/vendors} ]; then echo -e "\n\nprocessing file $file\n"; timeout 1m curl http://compound15.docking.org/catitems.txt -F compound_id-in=@$file -F count=all > ../../vendors/split_${splitting_size}/${file/compound_ids/vendors} & sleep 0.5; else echo "The file ${file/compound_ids/vendors} already exists, skipping"; fi; sleep 0.01; done; wait; done
+    while true; do grep -i "doctype" ../../vendors/split_${splitting_size}/* | awk -F ":" '{print $1}' | uniq | xargs rm -v ; wc -l ../../vendors/split_${splitting_size}/* | grep " 0 " | awk '{print $2}' | xargs rm -v ; wc -l ../../vendors/split_${splitting_size}/* | grep " [0-8][0-9] "  | awk '{print $2}' | xargs rm -v ; for file in *; do while true; do if [ "$(jobs | wc -l)" -lt "10" ]; then break; else echo -e "\nWaiting for free slot\n"; sleep 1; fi; done; if [ ! -f ../../vendors/split_${splitting_size}/${file/compound_ids/vendors} ]; then echo -e "\n\nprocessing file $file\n"; timeout 1m curl http://compound15.docking.org/catitems.txt -F compound_id-in=@$file -F count=all > ../../vendors/split_${splitting_size}/${file/compound_ids/vendors} & sleep 0.5; else echo "The file ${file/compound_ids/vendors} already exists, skipping"; fi; sleep 0.01; done; wait; done
     for file in *; do while true; do if [ "$(jobs | wc -l)" -lt "10" ]; then break; else echo -e "\nWaiting for free slot\n"; sleep 1; fi; done; if [ ! -f ../../vendors/split_${splitting_size}/${file/compound_ids/vendors} ]; then echo -e "\n\nprocessing file $file\n"; timeout 1m curl http://compound15.docking.org/catitems.txt -F compound_id-in=@$file -F count=all > ../../vendors/split_${splitting_size}/${file/compound_ids/vendors} & sleep 0.5; else echo "The file ${file/compound_ids/vendors} already exists, skipping"; fi; sleep 0.01; done;
-    grep -i "doctype" ../../vendors/split_${splitting_size}/* | awk -F ":" '{print $1}' | uniq | xargs rm -v || true; wc -l ../../vendors/split_${splitting_size}/* | grep " 0 " | awk '{print $2}' | xargs rm -v || true
+    grep -i "doctype" ../../vendors/split_${splitting_size}/* | awk -F ":" '{print $1}' | uniq | xargs rm -v ; wc -l ../../vendors/split_${splitting_size}/* | grep " 0 " | awk '{print $2}' | xargs rm -v
     # this comes without headinds -> nice
     cd ../../
 
