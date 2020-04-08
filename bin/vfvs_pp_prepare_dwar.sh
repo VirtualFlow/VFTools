@@ -76,7 +76,7 @@ mkdir smiles-original
 cd smiles-original
 #vfvs_prepare_compoundids2smiles.sh ../docking_scores/compounds.all.collections+compoundids.unique ../../../../../../../vflp/collections/compound15-20161102-splitted_sub compounds.all.smile
 # Adjusting the file vfvs_prepare_compoundid2smiles accordingly: reading any file ending (txt instead of smi), removing the tautomers from the compound filenames). We should do: Prepare a new smiles library with the tautomers of Compound15_2018 - we prepared it, just need to extract it and prepare it. And adjust the vfvs_prepare_compoundid2smiles file accordingly.
-/export/cgorgulla/Software/VFTools/bin/vfvs_prepare_compoundids2smiles.sh ../docking_scores/compounds.all.collections+compoundids.unique ../../VF/vflp/collections/compound15_20180825.txt.splitted1000/  tranch smiles.all
+vfvs_prepare_compoundids2smiles.sh ../docking_scores/compounds.all.collections+compoundids.unique ../../VF/vflp/collections/compound15_20180825.txt.splitted1000/ ${smiles_collection_folder_format} smiles.all
 sort compounds.all.smiles | uniq | tr " " "," > compounds.all.smiles.csv
 sed -i "1s/^/SMILES,Compound-ID\n/" compounds.all.smiles.csv
 cd ..
