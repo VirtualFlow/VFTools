@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-set -x
+
 usage="vfvs_pp_firstposes_prepare_ranking_structures.sh <results folder> <folder_format> <ranking file> <output folder> <mode>
 
 Possible folder formats (for the results as well as pdbqt folders):
