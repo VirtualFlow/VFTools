@@ -13,7 +13,7 @@ if [ "${1}" == "-h" ]; then
    exit 0 
 fi
 
-if [[ "$#" -ne "2" ]]; then
+if [[ "$#" -ne "3" ]]; then
    echo -e "\nWrong number of arguments. Exiting.\n"
    echo -e "${usage}\n\n"
    exit 1
@@ -36,6 +36,8 @@ clean_exit() {
 }
 trap 'clean_exit' EXIT
 
+mkdir -p $3
+
 index=0
 while IFS= read -r line; do
     index=$((index+1))
@@ -44,7 +46,7 @@ while IFS= read -r line; do
    tranch=${array/_*}
    collection_id=${array/*_}
    zinc_id="${array[1]}"
-   minindex="${array[2]}"
+   minindex="${array[3]}"
    echo "Extracting $tranch, $collection_id, $zinc_id, $minindex"
    cp $2/${tranch}/${collection_id}/${zinc_id}/replica-${minindex}/${zinc_id}.rank-1.pdb $3/${index}_${zinc_id}.pdb
    echo
