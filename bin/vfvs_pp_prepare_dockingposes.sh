@@ -5,7 +5,8 @@ usage="vfvs_pp_firstposes_prepare_ranking_structures.sh <results folder> <folder
 Possible folder formats (for the results as well as pdbqt folders):
     sub: for VFVS version < 8.0
     tar: vfvs version >= 8.0
-    meta: meta-tranches
+    meta_tranches: If the output files are stored on the tranch level. This is the case when the setting 'outputfiles_level' was set to 'tranch' in the control file during the workflow.
+    meta_collections: If the output files are stored on the collection level. This is the case when the setting 'outputfiles_level' was set to 'collection' in the control file during the workflow.
 
 The <ranking file> needs to contain the collection in the first column and the compound name in the second column.
 
