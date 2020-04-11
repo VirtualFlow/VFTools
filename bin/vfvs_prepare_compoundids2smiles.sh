@@ -53,9 +53,9 @@ while read -r line; do
     metatranch=${tranch:0:2}
     trap '' ERR
     if [ "${smiles_folder_format}" == "tranche" ]; then
-        smiles=$(grep -w "${compound_id/_*}" ${smiles_folder}/${tranch}/${collection}.* | awk '{print $1}')
+        smiles=$(grep -w "${compound_id/_T*}" ${smiles_folder}/${tranch}/${collection}.* | awk '{print $1}')
     elif [ "${smiles_folder_format}" == "meta_tranche" ]; then
-        smiles=$(grep -w "${compound_id/_*}" ${smiles_folder}/${metatranch}/${tranch}.* | awk '{print $1}')
+        smiles=$(grep -w "${compound_id/_T*}" ${smiles_folder}/${metatranch}/${tranch}.* | awk '{print $1}')
     fi
     
     if [ -n "${smiles}" ]; then
