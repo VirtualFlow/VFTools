@@ -6,7 +6,7 @@ usage="Usage: vfvs_pp_extract_bestposes.sh <compounds_file> <structure_dir> <out
 Options:
     <compound_file>: column1: tranch_collection 
                      column2: compound ID
-                     column3: minindex "
+                     column4: minindex "
 
 if [ "${1}" == "-h" ]; then
    echo -e "\n${usage}\n\n"

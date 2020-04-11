@@ -76,7 +76,7 @@ mkdir -p smiles-original
 cd smiles-original
 #vfvs_prepare_compoundids2smiles.sh ../docking_scores/compounds.all.collections+compoundids.unique ../../../../../../../vflp/collections/compound15-20161102-splitted_sub compounds.all.smile
 # Adjusting the file vfvs_prepare_compoundid2smiles accordingly: reading any file ending (txt instead of smi), removing the tautomers from the compound filenames). We should do: Prepare a new smiles library with the tautomers of Compound15_2018 - we prepared it, just need to extract it and prepare it. And adjust the vfvs_prepare_compoundid2smiles file accordingly.
-#vfvs_prepare_compoundids2smiles.sh ../docking_scores/compounds.all.collections+compoundids.unique ../${smiles_collection_folder} ${smiles_collection_folder_format} compounds.all.smiles
+vfvs_prepare_compoundids2smiles.sh ../docking_scores/compounds.all.collections+compoundids.unique ../${smiles_collection_folder} ${smiles_collection_folder_format} compounds.all.smiles
 sort compounds.all.smiles | uniq | tr " " "," > compounds.all.smiles.csv
 sed -i "1s/^/SMILES,Compound-ID\n/" compounds.all.smiles.csv
 cd ..
@@ -90,11 +90,14 @@ if [ "${database_type}" == "ZINC15" ]; then
     mkdir -p compound_ids
     awk '{print $1}'  docking_scores/*sorted.unique | sort | uniq  > compound_ids/compounds.all.compound_ids.unique
     sed "1s/^/Compound_ID\n/g" compound_ids/compounds.all.compound_ids.unique > compound_ids/compounds.all.compound_ids.unique.heading.csv
+    awk -F '[_ ]' '{print $3"_"$4,$3}' ../docking_scores/compounds.all.collections+compoundids.unique | awk '{print $1","$2}' | sed "1s/^/CompoundID,CompoundBaseID\n/g" > compounds.all.compound_ids+base_ids.csv
+    awk -F '[_ ]' '{print $3}' ../docking_scores/compounds.all.collections+compoundids.unique > compounds.all.base_ids
+		rm *uniq
     splitting_size=100
     cd compound_ids
     mkdir -p split_${splitting_size}
     cd split_${splitting_size}
-    split -l ${splitting_size} ../compounds.all.compound_ids.unique compounds.all.compound_ids.part-
+    split -l ${splitting_size} ../compounds.all.base_ids compounds.all.compound_ids.part-
     cd ../..
 
     # Getting the vendor availability
