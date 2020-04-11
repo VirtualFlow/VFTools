@@ -82,17 +82,18 @@ sed -i "1s/^/SMILES,Compound-ID\n/" compounds.all.smiles.csv
 cd ..
 
 
+# Preparing the compound IDs
+mkdir -p compound_ids
+awk '{print $1}'  docking_scores/*sorted.unique | sort | uniq  > compound_ids/compounds.all.compound_ids.unique
+sed "1s/^/Compound_ID\n/g" compound_ids/compounds.all.compound_ids.unique > compound_ids/compounds.all.compound_ids.unique.heading.csv
+awk -F '[_ ]' '{print $0","$1}' compound_ids/compounds.all.compound_ids.unique | awk '{print $1","$2}' | sed "1s/^/CompoundID,CompoundBaseID\n/g" > compound_ids/compounds.all.compound_ids+base_ids.uniq.csv
+awk -F '[_ ]' '{print $3}' docking_scores/compounds.all.collections+compoundids.unique > compound_ids/compounds.all.base_ids
+rm compound_ids/*unique
 
 # Vendors for ZINC15
 if [ "${database_type}" == "ZINC15" ]; then
 
-    # Preparing the compound IDs
-    mkdir -p compound_ids
-    awk '{print $1}'  docking_scores/*sorted.unique | sort | uniq  > compound_ids/compounds.all.compound_ids.unique
-    sed "1s/^/Compound_ID\n/g" compound_ids/compounds.all.compound_ids.unique > compound_ids/compounds.all.compound_ids.unique.heading.csv
-    awk -F '[_ ]' '{print $3"_"$4,$3}' ../docking_scores/compounds.all.collections+compoundids.unique | awk '{print $1","$2}' | sed "1s/^/CompoundID,CompoundBaseID\n/g" > compounds.all.compound_ids+base_ids.csv
-    awk -F '[_ ]' '{print $3}' ../docking_scores/compounds.all.collections+compoundids.unique > compounds.all.base_ids
-		rm *uniq
+    # Splitting the compounds
     splitting_size=100
     cd compound_ids
     mkdir -p split_${splitting_size}

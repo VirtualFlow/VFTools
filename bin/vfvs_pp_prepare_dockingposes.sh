@@ -157,11 +157,14 @@ while read -r line; do
         obabel -m -ipdbqt docking.out.pdbqt -osdf -O "${molecule}.rank-.sdf"
         obabel -ipdbqt docking.out.pdbqt -osdf -O "${molecule}.rank-all.sdf"
         echo "${tranch}_${collection} ${molecule} ${replica_folder} ${energy}" >> "${molecule}.rank-1.energy"
-        printf "%s  %s %10s  %s\n" "${tranch}_${collection_no}" "${molecule}" "${energy}" "${replica_folder}" >> ../../../../../${ranking_file}.energies
+        printf "%s,%10s,%s\n", "${molecule}" "${energy}" "${replica_folder}" >> ../../../../../${ranking_file}.energies.csv
         cd ..
     done
     cd ../../../../
 done < ${ranking_file}
+
+
+awk '{print $2","$3}' compounds.energies.csv | sed "1s/^/compoundid,energy\n/g" > compounds.energies.csv
 
 echo -e " *** The preparation of the structures has been completed ***"
 
