@@ -14,8 +14,8 @@ These files need to be in text-format (space separated), have the filename endin
     * Relative path to the SMILES collection folder
 
 <smiles_collection_folder_format>:
-    * tranch: smiles_collection_folder/<tranch>/<collection>.smi
-    * metatrach: smiles_collection_folder/<metatranch>/tranch.smi
+    * tranche: smiles_collection_folder/<tranch>/<collection>.smi
+    * meta_tranche: smiles_collection_folder/<metatranch>/tranch.smi
 
 <database_type>:
     * REAL: No preparation of vendor availability

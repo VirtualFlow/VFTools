@@ -7,8 +7,8 @@ The <input_list> has to contain the collection in the first column and the ZINC-
 The colums have to be separated by single spaces.
 All path names have to be relative to the working directory.
 <smiles_collection_folder_format>
-    * tranch: smiles_collection_folder/<tranch>/<collection>.smi
-    * metatrach: smiles_collection_folder/<metatranch>/tranch.smi"
+    * tranche: smiles_collection_folder/<tranch>/<collection>.smi
+    * meta_tranche: smiles_collection_folder/<metatranch>/tranch.smi"
 
 if [ "${1}" == "-h" ]; then
    echo -e "\n${usage}\n\n"
@@ -52,9 +52,9 @@ while read -r line; do
     #compound_id2=$(echo -n $compound_id | awk -F '[_]' '{print $1"_"$2}')
     metatranch=${tranch:0:2}
     trap '' ERR
-    if [ "${smiles_folder_format}" == "tranch" ]; then
+    if [ "${smiles_folder_format}" == "tranche" ]; then
         smiles=$(grep -w "${compound_id/_*}" ${smiles_folder}/${tranch}/${collection}.* | awk '{print $1}')
-    elif [ "${smiles_folder_format}" == "metatranch" ]; then
+    elif [ "${smiles_folder_format}" == "meta_tranche" ]; then
         smiles=$(grep -w "${compound_id/_*}" ${smiles_folder}/${metatranch}/${tranch}.* | awk '{print $1}')
     fi
     
