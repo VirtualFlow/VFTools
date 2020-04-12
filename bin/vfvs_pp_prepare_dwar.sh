@@ -5,7 +5,7 @@ usage="Usage: vfvs_pp_prepare_dwar.sh <smiles_collection_folder> <smiles_collect
 
 The script should be run in the dwar root folder, and contain a subfolder called 'docking_scores'.
 The folder 'docking_scores' should contain the files containing the compounds,collection, and docking scores.
-These files need to be in text-format (space separated), have the filename ending 'original.txt', and contain the following columns:
+These files need to be in text-format (space separated), have the filename ending 'original', and contain the following columns:
     * column 1: Collection
     * column 2: Compound ID
     * column 3: Docking score
