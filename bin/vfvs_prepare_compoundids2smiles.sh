@@ -8,7 +8,7 @@ The colums have to be separated by single spaces.
 All path names have to be relative to the working directory.
 <smiles_collection_folder_format>
     * tranche: smiles_collection_folder/<tranche>/<collection>.smi
-    * meta_tranche: smiles_collection_folder/<metatranche>/<tranche>.smi"
+    * metatranche: smiles_collection_folder/<metatranche>/<tranche>.smi"
 
 if [ "${1}" == "-h" ]; then
    echo -e "\n${usage}\n\n"
@@ -53,7 +53,7 @@ while read -r line; do
     trap '' ERR
     if [ "${smiles_folder_format}" == "tranche" ]; then
         smiles=$(grep -w "${compound_id/_T*}" ${smiles_folder}/${tranche}/${collection}.* | awk '{print $1}')
-    elif [ "${smiles_folder_format}" == "meta_tranche" ]; then
+    elif [ "${smiles_folder_format}" == "metatranche" ]; then
         smiles=$(grep -w "${compound_id/_T*}" ${smiles_folder}/${metatranche}/${tranche}.* | awk '{print $1}')
     fi
     
