@@ -1,5 +1,5 @@
 #!/bin/bash
-set -x
+
 #Checking the input arguments
 usage="Usage: vfvs_prepare_zincids2smiles.sh <input_list> <smiles_collection_folder> <smile_collection_folder_format> <output_filename>
 
@@ -49,7 +49,6 @@ while read -r line; do
     tranch=$(echo -n "$line" | awk -F '[_]' '{print $1}')
     collection=$(echo -n "$line" | awk -F '[_ ]' '{print $2}')
     compound_id=$(echo -n "$line" | awk -F '[ ]' '{print $2}')
-    #compound_id2=$(echo -n $compound_id | awk -F '[_]' '{print $1"_"$2}')
     metatranch=${tranch:0:2}
     trap '' ERR
     if [ "${smiles_folder_format}" == "tranche" ]; then
@@ -60,10 +59,10 @@ while read -r line; do
     
     if [ -n "${smiles}" ]; then
         echo "${smiles} ${compound_id}" >> ${output_file}
-        echo "Compound ${compound_id2} of collection ${collection} successfully extracted"
+        echo "Compound ${compound_id} of collection ${collection} successfully extracted"
     else 
-        echo ${compound_id2} ${collection} >> ${output_file}.failed
-        echo "Compound ${compound_id2} of collection ${collection} failed to extract"
+        echo ${compound_id} ${collection} >> ${output_file}.failed
+        echo "Compound ${compound_id} of collection ${collection} failed to extract"
     fi
     trap 'error_response_nonstd $LINENO' ERR
 done < "${input_file}"
