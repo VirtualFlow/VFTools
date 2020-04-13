@@ -48,6 +48,6 @@ while IFS= read -r line; do
    zinc_id="${array[1]}"
    minindex="${array[3]}"
    echo "Extracting $tranch, $collection_id, $zinc_id, $minindex"
-   cp $2/${tranch}/${collection_id}/${zinc_id}/replica-${minindex}/${zinc_id}.rank-1.pdb $3/${index}_${zinc_id}.pdb
+   cp $2/${tranch}/${collection_id}/${zinc_id}/replica-${minindex}/${zinc_id}.rank-1.pdb $3/${index}_${zinc_id}.pdb || true
    echo
 done < $1
