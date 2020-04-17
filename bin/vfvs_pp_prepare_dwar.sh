@@ -15,11 +15,11 @@ These files need to be in text-format (space separated), have the filename endin
 
 <smiles_collection_folder_format>:
     * tranche: smiles_collection_folder/<tranch>/<collection>.smi
-    * meta_tranche: smiles_collection_folder/<metatranch>/tranch.smi
+    * metatranche: smiles_collection_folder/<metatranch>/tranch.smi
 
 <database_type>:
-    * REAL: No preparation of vendor availability
-    * ZINC15: Prepares also the vendor availability"
+    * ZINC15: Prepares also the vendor availability according to the ZINC library
+    * Other: No preparation of vendor availability"
 
 if [ "${1}" == "-h" ]; then
    echo -e "\n${usage}\n\n"
@@ -86,7 +86,7 @@ cd ..
 mkdir -p compound_ids
 awk '{print $1}'  docking_scores/*sorted.unique | sort | uniq  > compound_ids/compounds.all.compound_ids.unique
 sed "1s/^/Compound_ID\n/g" compound_ids/compounds.all.compound_ids.unique > compound_ids/compounds.all.compound_ids.unique.heading.csv
-awk -F '[_ ]' '{print $0","$1}' compound_ids/compounds.all.compound_ids.unique | awk '{print $1","$2}' | sed "1s/^/CompoundID,CompoundBaseID\n/g" > compound_ids/compounds.all.compound_ids+base_ids.uniq.csv
+awk -F '[_ ]' '{print $0","$1}' compound_ids/compounds.all.compound_ids.unique | sed "1s/^/CompoundID,CompoundBaseID\n/g" > compound_ids/compounds.all.compound_ids+base_ids.unique.csv
 awk -F '[_ ]' '{print $3}' docking_scores/compounds.all.collections+compoundids.unique > compound_ids/compounds.all.base_ids
 rm compound_ids/*unique
 
