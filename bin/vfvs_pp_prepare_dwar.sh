@@ -15,7 +15,7 @@ These files need to be in text-format (space separated), have the filename endin
 
 <smiles_collection_folder_format>:
     * tranche: smiles_collection_folder/<tranch>/<collection>.smi
-    * metatranche: smiles_collection_folder/<metatranch>/tranch.smi
+    * meta_tranche: smiles_collection_folder/<metatranch>/tranch.smi
 
 <database_type>:
     * ZINC15: Prepares also the vendor availability according to the ZINC library
