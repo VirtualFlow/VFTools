@@ -3,8 +3,8 @@ usage="vfvs_pp_firstposes_all_unite <input folder> <type> <output filename>
 
 Possible types:
     sub: first poses in sub folders, uncompressed (version 6, 7)
-    tar: first poses in tar files (one per tranch, version >= 8)
-    meta_tranch_: first poses in tar files (one per tranch, in meta-tranch folders)
+    tar: first poses in tar files (one per tranche, version >= 8)
+    meta_tranche_: first poses in tar files (one per tranche, in meta-tranche folders)
     meta_collection: first poses gz files (one per collection)
 "
 
@@ -57,34 +57,34 @@ if [ "${type}" = "sub" ]; then
     done
 elif [ "${type}" = "tar" ]; then
     cd ${temp_folder}
-    for tranch in $(ls ../${input_folder}); do
-        echo " * Extracting ${input_folder}/${tranch} to ${temp_folder}"
-        tar -xf ../${input_folder}/${tranch} || true
+    for tranche in $(ls ../${input_folder}); do
+        echo " * Extracting ${input_folder}/${tranche} to ${temp_folder}"
+        tar -xf ../${input_folder}/${tranche} || true
     done
     cd ..
-    for tranch in $(ls ${temp_folder}); do
-        for file in $(ls ${temp_folder}/${tranch}); do
-            echo " * Adding file ${temp_folder}/${tranch}/${file} to ${output_filename}"
-            zcat ${temp_folder}/${tranch}/${file} | grep -v "average\-score" | sed "s/^/${tranch}_${file/.txt.gz} /g"  >> ${output_filename}
+    for tranche in $(ls ${temp_folder}); do
+        for file in $(ls ${temp_folder}/${tranche}); do
+            echo " * Adding file ${temp_folder}/${tranche}/${file} to ${output_filename}"
+            zcat ${temp_folder}/${tranche}/${file} | grep -v "average\-score" | sed "s/^/${tranche}_${file/.txt.gz} /g"  >> ${output_filename}
         done
     done
-elif [ "${type}" = "meta_tranch" ]; then
-    for metatranch in $(ls ${input_folder}); do
-        for tranch in $(ls ${input_folder}/${metatranch}); do
-            echo " * Extracting ${metatranch}/${tranch} to ${temp_folder}"
-            tar -xf ${input_folder}/${metatranch}/${tranch} -C ${temp_folder} || true
-            for file in $(ls ${temp_folder}/${tranch/.*}); do
-                echo " * Adding file ${temp_folder}/${tranch/.*}/${file} to ${output_filename}"
-                zcat ${temp_folder}/${tranch/.tar}/${file} | grep -v "average\-score" >> ${output_filename} || true
+elif [ "${type}" = "meta_tranche" ]; then
+    for metatranche in $(ls ${input_folder}); do
+        for tranche in $(ls ${input_folder}/${metatranche}); do
+            echo " * Extracting ${metatranche}/${tranche} to ${temp_folder}"
+            tar -xf ${input_folder}/${metatranche}/${tranche} -C ${temp_folder} || true
+            for file in $(ls ${temp_folder}/${tranche/.*}); do
+                echo " * Adding file ${temp_folder}/${tranche/.*}/${file} to ${output_filename}"
+                zcat ${temp_folder}/${tranche/.tar}/${file} | grep -v "average\-score" >> ${output_filename} || true
             done
-            rm -r ${temp_folder}/${tranch/.*}/ || true
+            rm -r ${temp_folder}/${tranche/.*}/ || true
         done
     done
 elif [ "${type}" = "meta_collection" ]; then
-    for metatranch in $(ls ${input_folder}); do
-        for tranch in $(ls ${input_folder}/${metatranch}); do
-            echo " * Extracting ${metatranch}/${tranch} to ${temp_folder}"
-            for file in ${input_folder}/${metatranch}/${tranch}/*; do
+    for metatranche in $(ls ${input_folder}); do
+        for tranche in $(ls ${input_folder}/${metatranche}); do
+            echo " * Extracting ${metatranche}/${tranche} to ${temp_folder}"
+            for file in ${input_folder}/${metatranche}/${tranche}/*; do
                 echo " * Adding file ${file} to ${output_filename}"
                 zcat ${file} | grep -v "average\-score" >> ${output_filename} || true
             done

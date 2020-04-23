@@ -12,7 +12,7 @@ Options:
     <library_format>: Possible values:
                            * tar
                            * meta
-                           * meta_tranch
+                           * meta_tranche
                            * meta_collection"
 
 if [ "${1}" == "-h" ]; then

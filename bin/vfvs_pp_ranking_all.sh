@@ -13,7 +13,7 @@ Options:
     <parallel runs>: Integer
     <library format>: Possible values:
                            * tar
-                           * meta_tranch
+                           * meta_tranche
                            * meta_collection"
 
 if [ "${1}" == "-h" ]; then
