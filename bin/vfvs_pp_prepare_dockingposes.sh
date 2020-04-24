@@ -164,7 +164,7 @@ while read -r line; do
 done < ${ranking_file}
 
 
-awk '{print $2","$3}' ${ranking_file}.energies.csv | sort -u -k 1,1 -t "," | sed "1s/^/compoundid,energy\n/g" >  ${ranking_file}.energies.uniq.csv
+awk '{print $1","$2}' ${ranking_file}.energies | sort -u -k 1,1 -t "," | sed "1s/^/compoundid,energy\n/g" >  ${ranking_file}.energies.uniq.csv
 
 echo -e " *** The preparation of the structures has been completed ***"
 
