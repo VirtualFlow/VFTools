@@ -163,8 +163,12 @@ while read -r line; do
     cd ../../../../
 done < ${ranking_file}
 
-
+# Creating a CSV file of the energy file
 awk '{print $1","$2}' ${ranking_file}.energies | sort -u -k 1,1 -t "," | sed "1s/^/compoundid,energy\n/g" >  ${ranking_file}.energies.uniq.csv
+
+
+# Extracting the plain docking poses
+vfvs_pp_extract_best_poses.sh ${ranking_file} ${output_folder} ${output_folder}.plain
 
 echo -e " *** The preparation of the structures has been completed ***"
 
