@@ -29,13 +29,6 @@ error_response_nonstd() {
 }
 trap 'error_response_nonstd $LINENO' ERR
 
-clean_exit() {
-    pkill -P $$ || true
-    sleep 3
-    pkill -9 -P $$ || true
-}
-trap 'clean_exit' EXIT
-
 mkdir -p $3
 
 index=0
