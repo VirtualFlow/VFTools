@@ -41,7 +41,6 @@ fi
 
 if ! [[ -d "tools" ]]; then
    echo -e "\nThis script has to be run in the root folder of VirtualFlow Exiting.\n"
-   echo -e "${usage}\n\n"
    exit 1
 fi
 
