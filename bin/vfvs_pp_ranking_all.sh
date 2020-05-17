@@ -61,13 +61,4 @@ done
 
 wait
 
-
-# Joining all the scores
-mkdir -p scores
-for folder in $(ls ${input_folder}); do
-    awk '{print $2","$1","$3}' $folder/firstposes.all.minindex.sorted.clean | sed "1s/^/Compound,Collection,$folder\n/" > scores/${folder}.scores;
-done
-
-#paste -d " " scores/*scores | awk -F '[, ]+' '{printf $1" "$2 " "; for (i=3;i<=NF;i+=3) {printf $i" "} printf "\n" }' | tr " " "," | sed "s/,$//g" > scores/all.ov.csv
-
 echo -e "\n * The first-poses of all docking runs have been prepared\n\n"

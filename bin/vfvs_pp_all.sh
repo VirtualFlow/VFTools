@@ -75,7 +75,7 @@ for folder in $(ls ../firstposes/); do
     mkdir -p $folder/docking_scores/;
     head -n $dwar_compound_count ../firstposes/$folder/firstposes.all.minindex.sorted.clean > $folder/docking_scores/top$dwar_compound_count.original
     cd $folder
-    vfvs_pp_prepare_dwar.sh ../../$smiles_collection_folder/ $smiles_collection_folder_format $database_type
+    vfvs_pp_prepare_dwar.sh ../../../$smiles_collection_folder/ $smiles_collection_folder_format $database_type
     cd ..
 done
 cd ..
