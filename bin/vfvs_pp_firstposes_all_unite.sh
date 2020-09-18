@@ -29,6 +29,21 @@ if [ "$#" -ne "3" ]; then
     exit 1
 fi
 
+# Exit cleanup
+cleanup_exit() {
+    # Terminating all remaining processes
+    # Getting our process group id
+    pgid=$(ps -o pgid= $$ | grep -o [0-9]*)
+    # The pgid is supposed to be the pid since we are supposed to be the session leader, but due to the error we can't be sure
+
+    # Terminating everything which was started by this script
+    pkill -SIGTERM -P $$ || true
+    sleep 1 || true
+
+    # Terminating it in a new process group
+}
+trap "cleanup_exit $LINENO" EXIT
+
 # Printing some information
 echo
 echo

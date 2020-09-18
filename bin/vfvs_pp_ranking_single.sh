@@ -50,6 +50,9 @@ fi
 mkdir -p $docking_name
 cd $docking_name/
 vfvs_pp_firstposes_all_unite.sh ../${input_folder}/summaries ${library_format} firstposes.all
+vfvs_pp_firstposes_all_unite.sh ../${input_folder/complete/incomplete}/summaries ${library_format} firstposes.all.incomplete
+cat firstposes.all.incomplete >> firstposes.all
+rm firstposes.all.incomplete
 vfvs_pp_firstposes_prepare_ranking.sh firstposes.all 4 firstposes.all.minindex.sorted.clean
 
 
