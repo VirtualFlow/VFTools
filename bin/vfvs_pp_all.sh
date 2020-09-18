@@ -65,19 +65,19 @@ poses_compound_count="$5"
 # First poses
 mkdir -p pp/firstposes
 cd pp/firstposes
-vfvs_pp_ranking_all.sh ../../output-files/complete/ 1 meta_collection
+#vfvs_pp_ranking_all.sh ../../output-files/complete/ 1 meta_collection
 cd ..
 
 #dwar
 mkdir -p dwar
 cd dwar
-for folder in $(ls ../firstposes/); do
-    mkdir -p $folder/docking_scores/;
-    head -n $dwar_compound_count ../firstposes/$folder/firstposes.all.minindex.sorted.clean > $folder/docking_scores/top$dwar_compound_count.original
-    cd $folder
-    vfvs_pp_prepare_dwar.sh ../../../$smiles_collection_folder/ $smiles_collection_folder_format $database_type
-    cd ..
-done
+#for folder in $(ls ../firstposes/); do
+#    mkdir -p $folder/docking_scores/;
+#    head -n $dwar_compound_count ../firstposes/$folder/firstposes.all.minindex.sorted.clean > $folder/docking_scores/top$dwar_compound_count.original
+#    cd $folder
+#    vfvs_pp_prepare_dwar.sh ../../../$smiles_collection_folder/ $smiles_collection_folder_format $database_type
+#    cd ..
+#done
 cd ..
 
 # docking_poses
