@@ -69,8 +69,8 @@ vfvs_pp_ranking_all.sh ../../output-files/complete/ 1 meta_collection
 cd ..
 
 #dwar
-mkdir -p dwar
-cd dwar
+mkdir -p dwar_${dwar_compound_count}
+cd dwar_${dwar_compound_count}
 for folder in $(ls ../firstposes/); do
     mkdir -p $folder/docking_scores/;
     head -n $dwar_compound_count ../firstposes/$folder/firstposes.all.minindex.sorted.clean > $folder/docking_scores/top$dwar_compound_count.original
