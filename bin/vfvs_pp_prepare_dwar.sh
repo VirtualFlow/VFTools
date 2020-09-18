@@ -105,8 +105,29 @@ if [ "${database_type}" == "ZINC15" ]; then
     splitting_size=100
     cd compound_ids/split_${splitting_size}
     mkdir -p ../../vendors/split_${splitting_size}
-    while true; do grep -i "doctype" ../../vendors/split_${splitting_size}/* | awk -F ":" '{print $1}' | uniq | xargs rm -v || true; wc -l ../../vendors/split_${splitting_size}/* | grep " 0 " | awk '{print $2}' | xargs rm -v || true; wc -l ../../vendors/split_${splitting_size}/* | grep " [0-8][0-9] "  | awk '{print $2}' | xargs rm -v || true; for file in *; do while true; do if [ "$(jobs | wc -l)" -lt "10" ]; then break; else echo -e "\nWaiting for free slot\n"; sleep 1; fi; done; if [ ! -f ../../vendors/split_${splitting_size}/${file/compound_ids/vendors} ]; then echo -e "\n\nprocessing file $file\n"; timeout 1m curl http://compound15.docking.org/catitems.txt -F compound_id-in=@$file -F count=all > ../../vendors/split_${splitting_size}/${file/compound_ids/vendors} & sleep 0.5; else echo "The file ${file/compound_ids/vendors} already exists, skipping"; fi; sleep 0.01; done; wait; done
-    for file in *; do while true; do if [ "$(jobs | wc -l)" -lt "10" ]; then break; else echo -e "\nWaiting for free slot\n"; sleep 1; fi; done; if [ ! -f ../../vendors/split_${splitting_size}/${file/compound_ids/vendors} ]; then echo -e "\n\nprocessing file $file\n"; timeout 1m curl http://compound15.docking.org/catitems.txt -F compound_id-in=@$file -F count=all > ../../vendors/split_${splitting_size}/${file/compound_ids/vendors} & sleep 0.5; else echo "The file ${file/compound_ids/vendors} already exists, skipping"; fi; sleep 0.01; done;
+    while [ $i -le 10 ]; do
+        grep -i "doctype" ../../vendors/split_${splitting_size}/* | awk -F ":" '{print $1}' | uniq | xargs rm -v || true
+        wc -l ../../vendors/split_${splitting_size}/* | grep " 0 " | awk '{print $2}' | xargs rm -v || true
+        wc -l ../../vendors/split_${splitting_size}/* | grep " [0-8][0-9] "  | awk '{print $2}' | xargs rm -v || true
+        for file in *; do
+            while true; do
+                if [ "$(jobs | wc -l)" -lt "10" ]; then
+                    break;
+                else
+                    echo -e "\nWaiting for free slot\n"; sleep 1
+                fi
+            done
+            if [ ! -f ../../vendors/split_${splitting_size}/${file/compound_ids/vendors} ]; then
+                echo -e "\n\nprocessing file $file\n"
+                timeout 1m curl http://compound15.docking.org/catitems.txt -F compound_id-in=@$file -F count=all > ../../vendors/split_${splitting_size}/${file/compound_ids/vendors} & sleep 0.5
+            else
+                echo "The file ${file/compound_ids/vendors} already exists, skipping"
+            fi
+            sleep 0.01
+        done
+        wait
+    done
+    #for file in *; do while true; do if [ "$(jobs | wc -l)" -lt "10" ]; then break; else echo -e "\nWaiting for free slot\n"; sleep 1; fi; done; if [ ! -f ../../vendors/split_${splitting_size}/${file/compound_ids/vendors} ]; then echo -e "\n\nprocessing file $file\n"; timeout 1m curl http://compound15.docking.org/catitems.txt -F compound_id-in=@$file -F count=all > ../../vendors/split_${splitting_size}/${file/compound_ids/vendors} & sleep 0.5; else echo "The file ${file/compound_ids/vendors} already exists, skipping"; fi; sleep 0.01; done;
     grep -i "doctype" ../../vendors/split_${splitting_size}/* | awk -F ":" '{print $1}' | uniq | xargs rm -v || true; wc -l ../../vendors/split_${splitting_size}/* | grep " 0 " | awk '{print $2}' | xargs rm -v || true
     # this comes without headinds -> nice
     cd ../../
@@ -118,7 +139,10 @@ if [ "${database_type}" == "ZINC15" ]; then
     # Converting into csv and naming it the first file compounds.all.vendors.nonunique-Compound-keys.0.csv
     sed "s/ \+/,/g" compounds.all.vendors.extended  | grep Compound > compounds.all.vendors.extended.nonunique-Compound-keys.0.csv
     # Making the files unique
-    for i in {0..101}; do awk -F "," '!seen[$2]++' compounds.all.vendors.extended.nonunique-Compound-keys.${i}.csv  > compounds.all.vendors.extended.unique-Compound-keys.${i}.csv; awk -F "," 'seen[$2]++' compounds.all.vendors.extended.nonunique-Compound-keys.${i}.csv  > compounds.all.vendors.extended.nonunique-Compound-keys.$((i+1)).csv; done
+    for i in {0..101}; do
+        awk -F "," '!seen[$2]++' compounds.all.vendors.extended.nonunique-Compound-keys.${i}.csv > compounds.all.vendors.extended.unique-Compound-keys.${i}.csv
+        awk -F "," 'seen[$2]++' compounds.all.vendors.extended.nonunique-Compound-keys.${i}.csv > compounds.all.vendors.extended.nonunique-Compound-keys.$((i+1)).csv
+    done
     mkdir unique
     mkdir nonunique
     mv *nonunique-Compound* nonunique/
