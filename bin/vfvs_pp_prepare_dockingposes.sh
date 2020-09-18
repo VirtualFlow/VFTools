@@ -86,9 +86,11 @@ while read -r line; do
 
     if [ "${format}" == "tar" ]; then
         if ! tar -xvf ../../../../${results_folder}/${tranch}.tar --wildcards "${tranch}/${collection_no}*tar"; then
-            echo " * Error, skipping this ligand"
-            cd ../../../../
-            continue
+            if ! tar -xvf ../../../../${results_folder/commplete/incomplete}/${tranch}.tar --wildcards "${tranch}/${collection_no}*tar"; then
+                echo " * Error, skipping this ligand"
+                cd ../../../../
+                continue
+            fi
         fi
         if ! tar -xvf ${tranch}/${collection_no}.gz.tar --wildcards "${molecule}*"; then
             echo " * Error, skipping this ligand"
@@ -97,16 +99,20 @@ while read -r line; do
         fi
     elif [ "${format}" == "sub" ]; then
         if ! tar -xvf ../../../../${results_folder}/${tranch}/${collection_no}.gz.tar --wildcards "${molecule}_replica*"; then
-            echo " * Error, skipping this ligand"
-            cd ../../../../
-            continue
+            if ! tar -xvf ../../../../${results_folder/commplete/incomplete}/${tranch}/${collection_no}.gz.tar --wildcards "${molecule}_replica*"; then
+                echo " * Error, skipping this ligand"
+                cd ../../../../
+                continue
+            fi
         fi
     elif [ "${format}" == "meta_tranch" ]; then
         metatranch=${tranch:0:2}
         if ! tar -xvf ../../../../${results_folder}/${metatranch}/${tranch}.tar --wildcards "${tranch}/${collection_no}.tar.gz"; then
-            echo " * Error, skipping this ligand"
-            cd ../../../../
-            continue
+            if ! tar -xvf ../../../../${results_folder/commplete/incomplete}/${metatranch}/${tranch}.tar --wildcards "${tranch}/${collection_no}.tar.gz"; then
+                echo " * Error, skipping this ligand"
+                cd ../../../../
+                continue
+            fi
         fi
         if ! tar -xvf ${tranch}/${collection_no}.tar.gz --wildcards "${collection_no}/${molecule}_replica*"; then
             echo " * Error, skipping this ligand"
@@ -117,9 +123,11 @@ while read -r line; do
     elif [ "${format}" == "meta_collection" ]; then
         metatranch=${tranch:0:2}
         if ! cp ../../../../${results_folder}/${metatranch}/${tranch}/${collection_no}.tar.gz ./; then
-            echo " * Error, skipping this ligand"
-            cd ../../../../
-            continue
+            if ! cp ../../../..${results_folder/commplete/incomplete}/${metatranch}/${tranch}/${collection_no}.tar.gz ./; then
+                echo " * Error, skipping this ligand"
+                cd ../../../../
+                continue
+            fi
         fi
         mkdir ${tranch}/
         mv ${collection_no}.tar.gz ${tranch}/
