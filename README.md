@@ -39,6 +39,9 @@ The project ist distributed under the GNU GPL v3.0. Please see the file [LICENSE
 
 
 
-### Contact
 
-If you have any questions, or would to get in touch with us, please contact Christoph Gorgulla (cgorgulla@g.harvard.edu).
+### VirtualFlow Forum
+
+If you need help or have any questions related to VirtualFlow, please use our forum: 
+
+* https://community.virtual-flow.org/
