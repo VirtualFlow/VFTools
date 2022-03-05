@@ -66,6 +66,7 @@ poses_compound_count="$5"
 mkdir -p pp/firstposes
 cd pp/firstposes
 vfvs_pp_ranking_all.sh ../../output-files/complete/ 1 meta_collection
+vfvs_pp_ranking_all.sh ../../output-files/incomplete/ 1 meta_collection
 cd ..
 
 #dwar
