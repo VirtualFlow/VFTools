@@ -62,8 +62,8 @@ molecule_counter=1
 collection_counter=1
 tranch_counter=1
 cd ${temp_folder}
-while false; do
-#while read -r line; do
+#while false; do
+while read -r line; do
     read -r -a array <<< "$line"
     old_collection=${collection}
     old_tranch=${tranch}

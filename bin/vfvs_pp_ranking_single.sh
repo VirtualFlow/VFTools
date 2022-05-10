@@ -53,7 +53,7 @@ vfvs_pp_firstposes_all_unite.sh ../${input_folder}/summaries ${library_format} f
 vfvs_pp_firstposes_all_unite.sh ../${input_folder/complete/incomplete}/summaries ${library_format} firstposes.all.incomplete
 cat firstposes.all.incomplete >> firstposes.all || true
 rm firstposes.all.incomplete || true
-vfvs_pp_firstposes_prepare_ranking.sh firstposes.all 4 firstposes.all.minindex.sorted.clean
+vfvs_pp_firstposes_prepare_ranking.sh firstposes.all 5 firstposes.all.minindex.sorted.clean
 
 
 cd ..
