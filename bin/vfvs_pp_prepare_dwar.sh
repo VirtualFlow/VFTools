@@ -57,7 +57,7 @@ database_type="$3"
 # Preparing the docking scores
 cd docking_scores
 for file in *original; do
-    awk '{print $2, $3}' $file | grep -e "-[0-9]*.[0-9]*" > $file.scores
+    awk '{print $2, $4}' $file | grep -e "-[0-9]*.[0-9]*" > $file.scores
 done
 for file in *scores; do
     sort -k 1,1 -u $file | sort -k 2,2 -n > $file.sorted.unique
@@ -74,7 +74,7 @@ cd ..
 # new smiles way
 mkdir -p smiles-original
 cd smiles-original
-#vfvs_prepare_compoundids2smiles.sh ../docking_scores/compounds.all.collections+compoundids.unique ../../../../../../../vflp/collections/compound15-20161102-splitted_sub compounds.all.smile
+vfvs_prepare_compoundids2smiles.sh ../docking_scores/compounds.all.collections+compoundids.unique ../../../../../../../vflp/collections/compound15-20161102-splitted_sub compounds.all.smile
 # Adjusting the file vfvs_prepare_compoundid2smiles accordingly: reading any file ending (txt instead of smi), removing the tautomers from the compound filenames). We should do: Prepare a new smiles library with the tautomers of Compound15_2018 - we prepared it, just need to extract it and prepare it. And adjust the vfvs_prepare_compoundid2smiles file accordingly.
 vfvs_prepare_compoundids2smiles.sh ../docking_scores/compounds.all.collections+compoundids.unique ../${smiles_collection_folder} ${smiles_collection_folder_format} compounds.all.smiles
 sort compounds.all.smiles | uniq | tr " " "," > compounds.all.smiles.csv
