@@ -42,7 +42,7 @@ output_filename=${3}
 # Main
 
 
-awk '{m=$6;for(i=5;i<=NF;i++)if($i<=m){m=$i; minindex=i};print $0, minindex-5}' ${input_filename} > ${input_filename}.minindex
+awk '{m=$6;for(i=6;i<=NF;i++)if($i<=m){m=$i; minindex=i};print $0, minindex-6}' ${input_filename} > ${input_filename}.minindex
 #sort -k 2,2 -t "," -u ${input_filename}.minindex > ${input_filename}irstposes.all.minindex.csv
 #sed -i '1 i\Collection,ZINC_ID,mindockingindex' firstposes.all.minindex.csv
 
