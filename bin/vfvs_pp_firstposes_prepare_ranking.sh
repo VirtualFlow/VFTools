@@ -57,5 +57,5 @@ fi
 
 
 echo " * Preparing the file ${output_filename} containing the top scoring compounds"
-awk -F ' ' -v rci=${column_id} '{$4 = sprintf("%5.1f", $rci); printf "%-10s %s %5s %s\n", $1,  $2, $3, $4}' ${input_filename}.minindex.sorted > ${output_filename} # rci = ranked column id
+awk -F ' ' -v rci=${column_id} '{$4 = sprintf("%5.1f", $rci); printf "%-10s %s %5s %s %s\n", $1,  $2, $3, $4, $5}' ${input_filename}.minindex.sorted > ${output_filename} # rci = ranked column id
 echo -e "\n * The preparation of the rankings has been completed.\n\n"
