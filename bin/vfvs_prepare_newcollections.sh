@@ -24,7 +24,7 @@ if [ "${1}" == "-h" ]; then
     echo -e "\n${usage}\n\n"
     exit 0
 fi
-if [ "$#" -ne "6" ]; then
+if [ "$#" -ne "5" ]; then
     echo -e "\nWrong number of arguments. Exiting.\n"
     echo -e "${usage}\n\n"
     exit 1
