@@ -144,7 +144,7 @@ while read -r line; do
         if [ "${new_collection}" == "true" ]; then
             echo " * Extracting collection ${collection}"
             rm -r ${collection} &>/dev/null || true
-            tar -xzf ${pdbqt_input_folder}/${collection}.tar.gz || true
+            tar -xzf ../${pdbqt_input_folder}/${collection}.tar.gz || true
         fi
         cp ${collection_no}/${ligand}.pdbqt ../${output_folder}.tmp2/${collection_new}/${ligand}.pdbqt || true
     else
