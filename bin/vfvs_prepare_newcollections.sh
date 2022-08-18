@@ -76,6 +76,7 @@ while read -r line; do
     if [ "${pdbqt_folder_format}" == "hash_metatranche" ]; then
         collection_ligand="${array[0]}"
         ligand=$(basename ${collection_ligand})
+        ligand=$(basename ${collection_ligand/.pdbqt})
         collection=${collection_ligand%\/*}
         collection_no="$(echo $collection | awk -F '/' '{print $NF}')"
         tranche="$(echo $collection | awk -F '/' '{print $(NF-1)}')"
@@ -157,7 +158,7 @@ echo -e "\n *** The preparation of the intermediate folders has been completed *
 
 echo -e "\n *** Starting the preparation of the length.all file ***"
 echo " * If the file ${output_folder}.length.all exists already it will be cleared."
-echo -n "" > ${output_folder}.length.all
+echo -n "" >${output_folder}.length.all
 for folder in $(ls ${output_folder}.tmp2); do
     echo -e "\n *** Adding the collection ${folder} to the length.all file ***"
     cd ${output_folder}.tmp2/${folder}
