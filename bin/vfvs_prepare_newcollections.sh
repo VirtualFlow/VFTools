@@ -77,8 +77,8 @@ while read -r line; do
         collection_ligand="${array[0]}"
         ligand=$(basename ${collection_ligand})
         collection=${collection_ligand%\/*}
-        collection_no="$($collection | awk -F '/' '{print $NF}')"
-        tranche="$($collection | awk -F '/' '{print $(NF-1)}')"
+        collection_no="$(echo $collection | awk -F '/' '{print $NF}')"
+        tranche="$(echo $collection | awk -F '/' '{print $(NF-1)}')"
     else
         collection="${array[0]}"
         ligand="${array[1]}"
