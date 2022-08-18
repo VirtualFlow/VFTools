@@ -6,8 +6,7 @@ Requires a ligand file with the first column the collection name and the second 
 
 pdbqt_folder_format. Possible values: tar_tar, meta, sub_tar, hash_metatranche
 sub_tar is supported by vfvs_prepare_newcollections2.sh
-This script is not yet ready to continue started procedures.
-Input library format. Possible values: hash or metatranche"
+This script is not yet ready to continue started procedures."
 
 # Standard error response 
 error_response_std() {
@@ -76,7 +75,7 @@ while read -r line; do
     if [ "${pdbqt_folder_format}" == "hash_metatranche" ]; then
         collection_ligand="${array[0]}"
         ligand=$(basename ${collection_ligand})
-        ligand=$(basename ${collection_ligand/.pdbqt})
+        ligand=$(basename ${collection_ligand/.*})
         collection=${collection_ligand%\/*}
         collection_no="$(echo $collection | awk -F '/' '{print $NF}')"
         tranche="$(echo $collection | awk -F '/' '{print $(NF-1)}')"
@@ -132,7 +131,9 @@ while read -r line; do
     elif [ "${pdbqt_folder_format}" == "sub_tar" ]; then
         tar -xOf ${pdbqt_input_folder}/${tranche}/${collection_no}.pdbqt.gz.tar ${ligand}.pdbqt.gz > ../${output_folder}.tmp2/${collection_new}/${ligand}.pdbqt.gz || true
     elif [ "${pdbqt_folder_format}" == "meta" ]; then
-        if [ "${new_collection}" == "true" ]; then 
+        if [ "${new_collection}" == "true" ]; then
+            echo
+            echo
             echo " * Extracting collection ${collection}"
             rm -r ${old_tranche} &>/dev/null || true
             tar -xf ../${pdbqt_input_folder}/${metatranche}/${tranche}.tar ${tranche}/${collection_no}.tar.gz || true
