@@ -146,7 +146,7 @@ while read -r line; do
             rm -r ${collection} &>/dev/null || true
             tar -xzf ${pdbqt_input_folder}/${collection}.tar.gz || true
         fi
-        cp ${collection_no}/${ligand}.pdbqt ../${output_folder}.tmp2/${collection_new}/${ligand}.pdbqt || true
+        cp ${pdbqt_input_folder}/${collection_no}/${ligand}.pdbqt ../${output_folder}.tmp2/${collection_new}/${ligand}.pdbqt || true
     else
         echo -e "Error: The argument pdbqt_folder_format has an unsupported value: ${pdbqt_folder_format}. Supported are sub_tar and tar_tar"
     fi
