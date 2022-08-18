@@ -4,9 +4,10 @@ usage="vfvs_prepare_newcollections.sh <ligand file> <pdbqt_input_folder> <pdbqt_
 
 Requires a ligand file with the first column the collection name and the second column the ligand name.
 
-pdbqt_folder_format: Possible values: tar_tar, meta, sub_tar
+pdbqt_folder_format. Possible values: tar_tar, meta, sub_tar, hash_metatranche
 sub_tar is supported by vfvs_prepare_newcollections2.sh
-This script is not yet ready to continue started procedures."
+This script is not yet ready to continue started procedures.
+Input library format. Possible values: hash or metatranche"
 
 # Standard error response 
 error_response_std() {
@@ -23,7 +24,7 @@ if [ "${1}" == "-h" ]; then
     echo -e "\n${usage}\n\n"
     exit 0
 fi
-if [ "$#" -ne "5" ]; then
+if [ "$#" -ne "6" ]; then
     echo -e "\nWrong number of arguments. Exiting.\n"
     echo -e "${usage}\n\n"
     exit 1
@@ -58,25 +59,37 @@ mkdir -p ${temp_folder}
 
 
 # Loop for each winning structure
-molecule_counter=1
+ligand_counter=1
 collection_counter=1
-tranch_counter=1
+tranche_counter=1
 cd ${temp_folder}
 #while false; do
 while read -r line; do
+    line="${line//,/ }"
     read -r -a array <<< "$line"
     old_collection=${collection}
-    old_tranch=${tranch}
-    collection="${array[0]}"
-    tranch="${collection/_*}"
-    metatranch="${tranch:0:2}"
-    collection_no=${collection/*_}
-    collection_no="$(printf "%05.f" "${collection_no}")"
-    molecule=${array[1]}
+    old_tranche=${tranche}
+
     collection_subno="1"
-    collection_subno_padded="001"
+    collection_subno_padded="0001"
+
+    if [ "${pdbqt_folder_format}" == "hash_metatranche" ]; then
+        collection_ligand="${array[0]}"
+        ligand=$(basename ${collection_ligand})
+        collection=${collection_ligand%\/*}
+        collection_no="$($collection | awk -F '/' '{print $NF}')"
+        tranche="$($collection | awk -F '/' '{print $(NF-1)}')"
+    else
+        collection="${array[0]}"
+        ligand="${array[1]}"
+        metatranche="${tranche:0:2}"
+        tranche="${collection/_*}"
+        collection_no=${collection/*_}
+        #collection_no="$(printf "%05.f" "${collection_no}")"
+    fi
+
     collection_no_new=${collection_no}-${collection_subno_padded}
-    collection_new="${tranch}_${collection_no_new}"
+    collection_new="${tranche}_${collection_no_new}"
 
     # Checking if we have a new collection
     if [ ! "${old_collection}" == "${collection}" ]; then
@@ -95,38 +108,45 @@ while read -r line; do
             if [ "${no_of_files}" -lt "${ligands_per_collection}" ]; then
                 break
             else
-                if [ "${collection_subno}" -eq "999" ]; then
-                    echo "Reached maximum supported collection number 999. Exiting..."
+                if [ "${collection_subno}" -eq "9999" ]; then
+                    echo "Reached maximum supported collection number 9999. Exiting..."
                     exit 1
                 else
                     collection_subno=$((collection_subno + 1))
-                    collection_subno_padded="$(printf "%03.f" "${collection_subno}")"
+                    collection_subno_padded="$(printf "%04.f" "${collection_subno}")"
                     collection_no_new=${collection_no}-${collection_subno_padded}
-                    collection_new="${tranch}_${collection_no_new}"
+                    collection_new="${tranche}_${collection_no_new}"
                 fi
             fi
         fi
     done
-    echo -e "\n *** Adding the molecule ${molecule} to the collection ${collection_new} ***"
+    echo -e "\n *** Adding the ligand ${ligand} to the collection ${collection_new} ***"
     if [ "${pdbqt_folder_format}" == "tar_tar" ]; then
-        mkdir ${tranch}
-        cd ${tranch}
-        tar -xvf ../../${pdbqt_input_folder}/${tranch}.tar ${collection_no}.pdbqt.gz.tar || true
+        mkdir ${tranche}
+        cd ${tranche}
+        tar -xvf ../../${pdbqt_input_folder}/${tranche}.tar ${collection_no}.pdbqt.gz.tar || true
         cd ../
-        tar -xOf ${tranch}/${collection_no}.pdbqt.gz.tar ${molecule}.pdbqt.gz > ../${output_folder}.tmp2/${collection_new}/${molecule}.pdbqt.gz || true
-        rm -r ${tranch}
+        tar -xOf ${tranche}/${collection_no}.pdbqt.gz.tar ${ligand}.pdbqt.gz > ../${output_folder}.tmp2/${collection_new}/${ligand}.pdbqt.gz || true
+        rm -r ${tranche}
     elif [ "${pdbqt_folder_format}" == "sub_tar" ]; then
-        tar -xOf ${pdbqt_input_folder}/${tranch}/${collection_no}.pdbqt.gz.tar ${molecule}.pdbqt.gz > ../${output_folder}.tmp2/${collection_new}/${molecule}.pdbqt.gz || true
+        tar -xOf ${pdbqt_input_folder}/${tranche}/${collection_no}.pdbqt.gz.tar ${ligand}.pdbqt.gz > ../${output_folder}.tmp2/${collection_new}/${ligand}.pdbqt.gz || true
     elif [ "${pdbqt_folder_format}" == "meta" ]; then
         if [ "${new_collection}" == "true" ]; then 
             echo " * Extracting collection ${collection}"
-            rm -r ${old_tranch} &>/dev/null || true
-            tar -xf ../${pdbqt_input_folder}/${metatranch}/${tranch}.tar ${tranch}/${collection_no}.tar.gz || true
-            cd ${tranch}
+            rm -r ${old_tranche} &>/dev/null || true
+            tar -xf ../${pdbqt_input_folder}/${metatranche}/${tranche}.tar ${tranche}/${collection_no}.tar.gz || true
+            cd ${tranche}
             tar -xzf ${collection_no}.tar.gz || true
             cd ..
         fi
-        cp ${tranch}/${collection_no}/${molecule}.pdbqt ../${output_folder}.tmp2/${collection_new}/${molecule}.pdbqt || true
+        cp ${tranche}/${collection_no}/${ligand}.pdbqt ../${output_folder}.tmp2/${collection_new}/${ligand}.pdbqt || true
+    elif [ "${pdbqt_folder_format}" == "hash_metatranche" ]; then
+        if [ "${new_collection}" == "true" ]; then
+            echo " * Extracting collection ${collection}"
+            rm -r ${collection} &>/dev/null || true
+            tar -xzf ${pdbqt_input_folder}/${collection}.tar.gz || true
+        fi
+        cp ${collection_no}/${ligand}.pdbqt ../${output_folder}.tmp2/${collection_new}/${ligand}.pdbqt || true
     else
         echo -e "Error: The argument pdbqt_folder_format has an unsupported value: ${pdbqt_folder_format}. Supported are sub_tar and tar_tar"
     fi
@@ -146,30 +166,31 @@ for folder in $(ls ${output_folder}.tmp2); do
     cd ../..
 done
 echo -e "\n *** The preparation of the length.all file has been completed ***"
+
 echo -e "\n *** Starting the preparation of the tar archives ***"
 cd ${output_folder}.tmp2
 for folder in $(ls); do
-    tranch=${folder/_*}
+    tranche=${folder/_*}
     collection_no=${folder/*_}
-    if [[ ! -f ${folder}/${tranch}.tar.gz && ! "${folder}" == "${tranch}" ]]; then
+    if [[ ! -f ${folder}/${tranche}.tar.gz && ! "${folder}" == "${tranche}" ]]; then
 
-        mv ${folder} ${tranch}
-        cd ${tranch}
+        mv ${folder} ${tranche}
+        cd ${tranche}
         mkdir ${collection_no}
         mv *pdbqt ${collection_no}
         echo -e "\n *** Creating the tar archive for collection ${folder} ***"
         tar -czf ${collection_no}.tar.gz ${collection_no} || true
-        echo -e " *** Adding the tar archive of collection ${folder} to the tranch-archive ${tranch}.tar ***"
-        mkdir -p ../../${output_folder}/${tranch:0:2}/
-        tar -rf ../../${output_folder}/${tranch:0:2}/${tranch}.tar -C .. ${tranch}/${collection_no}.tar.gz || true
+        echo -e " *** Adding the tar archive of collection ${folder} to the tranche-archive ${tranche}.tar ***"
+        mkdir -p ../../${output_folder}/${tranche:0:2}/
+        tar -rf ../../${output_folder}/${tranche:0:2}/${tranche}.tar -C .. ${tranche}/${collection_no}.tar.gz || true
         cd ..
-        rm -r ${tranch}
+        rm -r ${tranche}
     else
         echo "* Already existing, skipping this collection"
     fi
 done
 cd ..
-echo -e "\n *** The preparation of the tranch-archives has been completed ***"
+echo -e "\n *** The preparation of the tranche-archives has been completed ***"
 
 # Finalization
 
