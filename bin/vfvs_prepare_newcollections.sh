@@ -146,9 +146,9 @@ while read -r line; do
         if [ "${new_collection}" == "true" ]; then
             echo " * Extracting collection ${collection}"
             rm -r ${collection} &>/dev/null || true
-            tar -xzf ../${pdbqt_input_folder}/${collection}.tar.gz || true
+            tar -xzf ../${pdbqt_input_folder}/${collection//smi/pdbqt}.tar.gz || true
         fi
-        cp ${collection_no}/${ligand}.pdbqt ../${output_folder}.tmp2/${collection_new}/${ligand}.pdbqt || true
+        cp ${collection_no//smi/pdbqt}/${ligand}.pdbqt ../${output_folder}.tmp2/${collection_new}/${ligand}.pdbqt || true
     else
         echo -e "Error: The argument pdbqt_folder_format has an unsupported value: ${pdbqt_folder_format}. Supported are sub_tar and tar_tar"
     fi
