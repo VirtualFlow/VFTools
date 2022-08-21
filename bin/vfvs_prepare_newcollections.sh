@@ -175,12 +175,11 @@ cd ${output_folder}.tmp2
 for folder in $(ls); do
     tranche=${folder/_*}
     collection_no=${folder/*_}
+    rm -r ${tranche}
     if [[ ! -f ${folder}/${tranche}.tar.gz && ! "${folder}" == "${tranche}" && ! -d {tranche} ]]; then
-
-        mv ${folder} ${tranche}
+        mkdir -p ${tranche}/${collection_no}/
+        mv ${folder}/*pdbqt ${tranche}/${collection_no}/
         cd ${tranche}
-        mkdir ${collection_no}
-        mv *pdbqt ${collection_no}
         echo -e "\n *** Creating the tar archive for collection ${folder} ***"
         tar -czf ${collection_no}.tar.gz ${collection_no} || true
         echo -e " *** Adding the tar archive of collection ${folder} to the tranche-archive ${tranche}.tar ***"
