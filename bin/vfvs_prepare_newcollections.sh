@@ -175,7 +175,7 @@ cd ${output_folder}.tmp2
 for folder in $(ls); do
     tranche=${folder/_*}
     collection_no=${folder/*_}
-    if [[ ! -f ${folder}/${tranche}.tar.gz && ! "${folder}" == "${tranche}" ]]; then
+    if [[ ! -f ${folder}/${tranche}.tar.gz && ! "${folder}" == "${tranche}" && ! -d {tranche} ]]; then
 
         mv ${folder} ${tranche}
         cd ${tranche}
