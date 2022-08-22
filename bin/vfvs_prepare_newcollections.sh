@@ -175,7 +175,7 @@ cd ${output_folder}.tmp2
 for folder in $(ls); do
     tranche=${folder/_*}
     collection_no=${folder/*_}
-    rm -r ${tranche}
+    rm -r ${tranche} 2>/dev/null || true
     if [[ ! -f ${folder}/${tranche}.tar.gz && ! "${folder}" == "${tranche}" && ! -d {tranche} ]]; then
         mkdir -p ${tranche}/${collection_no}/
         mv ${folder}/*pdbqt ${tranche}/${collection_no}/
