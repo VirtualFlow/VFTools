@@ -180,13 +180,14 @@ for folder in $(ls); do
         mkdir -p ${tranche}/${collection_no}/
         mv ${folder}/*pdbqt ${tranche}/${collection_no}/
         cd ${tranche}
+        rm -vr ${folder} || true
         echo -e "\n *** Creating the tar archive for collection ${folder} ***"
         tar -czf ${collection_no}.tar.gz ${collection_no} || true
         echo -e " *** Adding the tar archive of collection ${folder} to the tranche-archive ${tranche}.tar ***"
         mkdir -p ../../${output_folder}/${tranche:0:2}/
         tar -rf ../../${output_folder}/${tranche:0:2}/${tranche}.tar -C .. ${tranche}/${collection_no}.tar.gz || true
         cd ..
-        rm -r ${tranche}
+        rm -r ${tranche} || true
     else
         echo "* Already existing, skipping this collection"
     fi
