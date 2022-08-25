@@ -178,7 +178,7 @@ for folder in $(ls); do
     rm -r ${tranche} 2>/dev/null || true
     if [[ ! -f ${folder}/${tranche}.tar.gz && ! "${folder}" == "${tranche}" && ! -d {tranche} ]]; then
         mkdir -p ${tranche}/${collection_no}/
-        mv ${folder}/*pdbqt ${tranche}/${collection_no}/
+        mv ${folder}/*pdbqt ${tranche}/${collection_no}/ || true
         cd ${tranche}
         rm -vr ${folder} || true
         echo -e "\n *** Creating the tar archive for collection ${folder} ***"
