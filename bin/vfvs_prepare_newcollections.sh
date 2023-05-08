@@ -68,7 +68,7 @@ while read -r line; do
     read -r -a array <<< "$line"
     old_collection=${collection}
     old_tranche=${tranche}
-    old_eollection_no=${collection_no}
+    old_collection_no=${collection_no}
 
     collection_subno="1"
     collection_subno_padded="0001"
@@ -83,8 +83,8 @@ while read -r line; do
     else
         collection="${array[0]}"
         ligand="${array[1]}"
-        metatranche="${tranche:0:2}"
         tranche="${collection/_*}"
+        metatranche="${tranche:0:2}"
         collection_no=${collection/*_}
         #collection_no="$(printf "%05.f" "${collection_no}")"
     fi
