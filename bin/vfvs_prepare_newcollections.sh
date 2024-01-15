@@ -146,7 +146,7 @@ while read -r line; do
     elif [ "${pdbqt_folder_format}" == "hash_metatranche" ]; then
         if [ "${new_collection}" == "true" ]; then
             echo " * Extracting collection ${collection}"
-            rm -r ${old_eollection_no} &>/dev/null || true
+            rm -r ${old_collection_no} &>/dev/null || true
             tar -xzf ../${pdbqt_input_folder}/${collection//smi/pdbqt}.tar.gz || true
         fi
         cp ${collection_no//smi/pdbqt}/${ligand}.pdbqt ../${output_folder}.tmp2/${collection_new}/${ligand}.pdbqt || true
