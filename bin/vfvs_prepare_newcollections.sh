@@ -68,7 +68,7 @@ while read -r line; do
     read -r -a array <<< "$line"
     old_collection=${collection}
     old_tranche=${tranche}
-    old_eollection_no=${collection_no}
+    old_collection_no=${collection_no}
 
     collection_subno="1"
     collection_subno_padded="0001"
@@ -83,8 +83,8 @@ while read -r line; do
     else
         collection="${array[0]}"
         ligand="${array[1]}"
-        metatranche="${tranche:0:2}"
         tranche="${collection/_*}"
+        metatranche="${tranche:0:2}"
         collection_no=${collection/*_}
         #collection_no="$(printf "%05.f" "${collection_no}")"
     fi
@@ -146,7 +146,7 @@ while read -r line; do
     elif [ "${pdbqt_folder_format}" == "hash_metatranche" ]; then
         if [ "${new_collection}" == "true" ]; then
             echo " * Extracting collection ${collection}"
-            rm -r ${old_eollection_no} &>/dev/null || true
+            rm -r ${old_collection_no} &>/dev/null || true
             tar -xzf ../${pdbqt_input_folder}/${collection//smi/pdbqt}.tar.gz || true
         fi
         cp ${collection_no//smi/pdbqt}/${ligand}.pdbqt ../${output_folder}.tmp2/${collection_new}/${ligand}.pdbqt || true

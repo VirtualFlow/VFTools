@@ -5,7 +5,7 @@ usage="vfvs_pp_prepare_docking_poses.sh <results folder> <folder_format> <rankin
 Possible folder formats (for the results as well as pdbqt folders):
     sub: for VFVS version < 8.0
     tar: vfvs version >= 8.0
-    meta_tranch: Use this format if the output files are stored on the tranch level. This is the case when the setting 'outputfiles_level' was set to 'tranch' in the control file during the workflow.
+    meta_tranche: Use this format if the output files are stored on the tranche level. This is the case when the setting 'outputfiles_level' was set to 'tranche' in the control file during the workflow.
     meta_collection: Use this format if the output files are stored on the collection level. This is the case when the setting 'outputfiles_level' was set to 'collection' in the control file during the workflow.
 
 The <ranking file> needs to contain the collection in the first column and the compound name in the second column.
@@ -73,65 +73,65 @@ while read -r line; do
     collection="${array[0]}"
     #molecule=${array[1]/_*} # removing replicas
     molecule=${array[1]}
-    tranch=${collection/_*}
+    tranche=${collection/_*}
     collection_no=${collection/*_}
 #    name2_padded=$(printf "%05.f" ${collection:5})
     echo -e "\n *** Preparing structure ${molecule} ***"
-    if [ -d ${output_folder}/${tranch}/${collection_no}/${molecule} ]; then
+    if [ -d ${output_folder}/${tranche}/${collection_no}/${molecule} ]; then
         echo " * The directory for this ligand already exists. Skipping this ligand."
         continue
     fi
-    mkdir -p ${output_folder}/${tranch}/${collection_no}/${molecule}
-    cd ${output_folder}/${tranch}/${collection_no}/${molecule}
+    mkdir -p ${output_folder}/${tranche}/${collection_no}/${molecule}
+    cd ${output_folder}/${tranche}/${collection_no}/${molecule}
 
     if [ "${format}" == "tar" ]; then
-        if ! tar -xvf ../../../../${results_folder}/${tranch}.tar --wildcards "${tranch}/${collection_no}*tar"; then
-            if ! tar -xvf ../../../../${results_folder/commplete/incomplete}/${tranch}.tar --wildcards "${tranch}/${collection_no}*tar"; then
+        if ! tar -xvf ../../../../${results_folder}/${tranche}.tar --wildcards "${tranche}/${collection_no}*tar"; then
+            if ! tar -xvf ../../../../${results_folder/complete/incomplete}/${tranche}.tar --wildcards "${tranche}/${collection_no}*tar"; then
                 echo " * Error, skipping this ligand"
                 cd ../../../../
                 continue
             fi
         fi
-        if ! tar -xvf ${tranch}/${collection_no}.gz.tar --wildcards "${molecule}*"; then
+        if ! tar -xvf ${tranche}/${collection_no}.gz.tar --wildcards "${molecule}*"; then
             echo " * Error, skipping this ligand"
             cd ../../../../
             continue
         fi
     elif [ "${format}" == "sub" ]; then
-        if ! tar -xvf ../../../../${results_folder}/${tranch}/${collection_no}.gz.tar --wildcards "${molecule}_replica*"; then
-            if ! tar -xvf ../../../../${results_folder/commplete/incomplete}/${tranch}/${collection_no}.gz.tar --wildcards "${molecule}_replica*"; then
+        if ! tar -xvf ../../../../${results_folder}/${tranche}/${collection_no}.gz.tar --wildcards "${molecule}_replica*"; then
+            if ! tar -xvf ../../../../${results_folder/complete/incomplete}/${tranche}/${collection_no}.gz.tar --wildcards "${molecule}_replica*"; then
                 echo " * Error, skipping this ligand"
                 cd ../../../../
                 continue
             fi
         fi
-    elif [ "${format}" == "meta_tranch" ]; then
-        metatranch=${tranch:0:2}
-        if ! tar -xvf ../../../../${results_folder}/${metatranch}/${tranch}.tar --wildcards "${tranch}/${collection_no}.tar.gz"; then
-            if ! tar -xvf ../../../../${results_folder/commplete/incomplete}/${metatranch}/${tranch}.tar --wildcards "${tranch}/${collection_no}.tar.gz"; then
+    elif [ "${format}" == "meta_tranche" ]; then
+        metatranche=${tranche:0:2}
+        if ! tar -xvf ../../../../${results_folder}/${metatranche}/${tranche}.tar --wildcards "${tranche}/${collection_no}.tar.gz"; then
+            if ! tar -xvf ../../../../${results_folder/complete/incomplete}/${metatranche}/${tranche}.tar --wildcards "${tranche}/${collection_no}.tar.gz"; then
                 echo " * Error, skipping this ligand"
                 cd ../../../../
                 continue
             fi
         fi
-        if ! tar -xvf ${tranch}/${collection_no}.tar.gz --wildcards "${collection_no}/${molecule}_replica*"; then
+        if ! tar -xvf ${tranche}/${collection_no}.tar.gz --wildcards "${collection_no}/${molecule}_replica*"; then
             echo " * Error, skipping this ligand"
             cd ../../../../
             continue
         fi
         mv ${collection_no}/*pdbqt ./
     elif [ "${format}" == "meta_collection" ]; then
-        metatranch=${tranch:0:2}
-        if ! cp ../../../../${results_folder}/${metatranch}/${tranch}/${collection_no}.tar.gz ./; then
-            if ! cp ../../../..${results_folder/commplete/incomplete}/${metatranch}/${tranch}/${collection_no}.tar.gz ./; then
+        metatranche=${tranche:0:2}
+        if ! cp ../../../../${results_folder}/${metatranche}/${tranche}/${collection_no}.tar.gz ./; then
+            if ! cp ../../../..${results_folder/complete/incomplete}/${metatranche}/${tranche}/${collection_no}.tar.gz ./; then
                 echo " * Error, skipping this ligand"
                 cd ../../../../
                 continue
             fi
         fi
-        mkdir ${tranch}/
-        mv ${collection_no}.tar.gz ${tranch}/
-        if ! tar -xvf ${tranch}/${collection_no}.tar.gz --wildcards "${collection_no}/${molecule}_replica*"; then
+        mkdir ${tranche}/
+        mv ${collection_no}.tar.gz ${tranche}/
+        if ! tar -xvf ${tranche}/${collection_no}.tar.gz --wildcards "${collection_no}/${molecule}_replica*"; then
             echo " * Error, skipping this ligand"
             cd ../../../../
             continue
@@ -150,13 +150,13 @@ while read -r line; do
         replica=${file/*_}
         replica=${replica/.*}
         mkdir -p ${replica}
-        mv $file ${replica}/${tranch}_${collection_no}_${file}
+        mv $file ${replica}/${tranche}_${collection_no}_${file}
     done
     if [[ "${format}" == "tar" ]] || [[ "${format}" == "sub" ]]; then
         rm *tar || true        
     fi
 
-    rm -r ${tranch}*
+    rm -r ${tranche}*
     for replica_folder in $(ls -d replica*); do
         cd ${replica_folder}
         mv *pdbqt docking.out.pdbqt
@@ -164,7 +164,7 @@ while read -r line; do
         energy=$(obenergy "${molecule}.rank-1.pdb" | tail -n 1 | awk '{print $4}')
         obabel -m -ipdbqt docking.out.pdbqt -osdf -O "${molecule}.rank-.sdf"
         obabel -ipdbqt docking.out.pdbqt -osdf -O "${molecule}.rank-all.sdf"
-        echo "${tranch}_${collection} ${molecule} ${replica_folder} ${energy}" >> "${molecule}.rank-1.energy"
+        echo "${tranche}_${collection} ${molecule} ${replica_folder} ${energy}" >> "${molecule}.rank-1.energy"
         echo "${molecule} ${energy} ${replica_folder}" >> ../../../../../${ranking_file}.energies
         cd ..
     done
