@@ -1,0 +1,90 @@
+Missing receptor.
+
+Correct usage:
+
+Input:
+  -r [ --receptor ] arg         rigid part of the receptor (PDBQT)
+  --flex arg                    flexible side chains, if any (PDBQT)
+  -l [ --ligand ] arg           ligand(s)
+  --flexres arg                 flexible side chains specified by comma 
+                                separated list of chain:resid
+  --flexdist_ligand arg         Ligand to use for flexdist
+  --flexdist arg                set all side chains within specified distance 
+                                to flexdist_ligand to flexible
+
+Search space (required):
+  --center_x arg                X coordinate of the center
+  --center_y arg                Y coordinate of the center
+  --center_z arg                Z coordinate of the center
+  --size_x arg                  size in the X dimension (Angstroms)
+  --size_y arg                  size in the Y dimension (Angstroms)
+  --size_z arg                  size in the Z dimension (Angstroms)
+  --autobox_ligand arg          Ligand to use for autobox
+  --autobox_add arg             Amount of buffer space to add to auto-generated
+                                box (default +4 on all six sides)
+  --no_lig                      no ligand; for sampling/minimizing flexible 
+                                residues
+
+Scoring and minimization options:
+  --scoring arg                 specify alternative builtin scoring function
+  --custom_scoring arg          custom scoring function file
+  --custom_atoms arg            custom atom type parameters file
+  --score_only                  score provided ligand pose
+  --local_only                  local search only using autobox (you probably 
+                                want to use --minimize)
+  --minimize                    energy minimization
+  --randomize_only              generate random poses, attempting to avoid 
+                                clashes
+  --minimize_iters arg (=0)     number iterations of steepest descent; default 
+                                scales with rotors and usually isn't sufficient
+                                for convergence
+  --accurate_line               use accurate line search
+  --minimize_early_term         Stop minimization before convergence conditions
+                                are fully met.
+  --approximation arg           approximation (linear, spline, or exact) to use
+  --factor arg                  approximation factor: higher results in a 
+                                finer-grained approximation
+  --force_cap arg               max allowed force; lower values more gently 
+                                minimize clashing structures
+  --user_grid arg               Autodock map file for user grid data based 
+                                calculations
+  --user_grid_lambda arg (=-1)  Scales user_grid and functional scoring
+  --print_terms                 Print all available terms with default 
+                                parameterizations
+  --print_atom_types            Print all available atom types
+
+Output (optional):
+  -o [ --out ] arg              output file name, format taken from file 
+                                extension
+  --out_flex arg                output file for flexible receptor residues
+  --log arg                     optionally, write log file
+  --atom_terms arg              optionally write per-atom interaction term 
+                                values
+  --atom_term_data              embedded per-atom interaction terms in output 
+                                sd data
+
+Misc (optional):
+  --cpu arg                     the number of CPUs to use (the default is to 
+                                try to detect the number of CPUs or, failing 
+                                that, use 1)
+  --seed arg                    explicit random seed
+  --exhaustiveness arg (=8)     exhaustiveness of the global search (roughly 
+                                proportional to time)
+  --num_modes arg (=9)          maximum number of binding modes to generate
+  --energy_range arg (=3)       maximum energy difference between the best 
+                                binding mode and the worst one displayed 
+                                (kcal/mol)
+  --min_rmsd_filter arg (=1)    rmsd value used to filter final poses to remove
+                                redundancy
+  -q [ --quiet ]                Suppress output messages
+  --addH arg                    automatically add hydrogens in ligands (on by 
+                                default)
+
+Configuration file (optional):
+  --config arg                  the above options can be put here
+
+Information (optional):
+  --help                        display usage summary
+  --help_hidden                 display usage summary with hidden options
+  --version                     display program version
+
